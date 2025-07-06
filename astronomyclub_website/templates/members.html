@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""/>
+    <link
+            rel="stylesheet"
+            as="style"
+            onload="this.rel='stylesheet'"
+            href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title> Members </title>
+    <link rel="stylesheet" href="/static/assets/css/memberStyle.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900"
+          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""/>
+    <link
+            rel="stylesheet"
+            as="style"
+            onload="this.rel='stylesheet'"
+            href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+
+
+    />
+
+    <title> images</title>
+    <link rel="stylesheet" href="/static/assets/css/imageStyle.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="/static/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/assets/css/AstroClub.css">
+    <link rel="stylesheet" href="/static/assets/css/lightbox.css">
+    <link rel="stylesheet" href="/static/assets/css/owl.css">
+
+
+</head>
+
+
+<body>
+<header class="main-header clearfix" role="header" style="background-color: #162239FC;">
+    <div class="logo">
+        <a href="/"><em>BZU Astronomy</em> Club</a>
+    </div>
+</header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select the Login link
+        const loginLink = document.querySelector('a[href="/AdminLogin"]');
+
+        // Check if the link exists
+        if (loginLink) {
+            loginLink.addEventListener('click', function (event) {
+                event.preventDefault();  // Prevent the default behavior
+
+                // Navigate to the AdminLogin page
+                window.location.href = loginLink.getAttribute('href');
+            });
+        }
+    });
+</script>
+
+
+
+<!-- header From main : Mahmoud  ------------------------------------------------------------------  -->
+ 
+<!-- Photo Section -->
+<section class="photo-section">
+    <div class="text-content">
+        <h1>
+            <span class="color1"> CLUB</span>
+            <span class="color2">MEMBERS</span>
+        </h1>
+        <p1>Welcome to the Astronomy Club Members page <br> where you can view a list of members actively participating in the club's activities. Here, you will find details about each member, including their name, email, and join date.
+        </p1>
+        <div class="actions">
+          <button type="button" id="view-members-btn">View Members</button>
+      </div>
+        
+   
+    </div>
+</section>
+<!--  /.content -->  
+
+<section class="member-list">
+    <h2>Members List</h2>
+    <table>
+      <thead>
+        <tr>
+
+          <th>Name</th>
+          <th>Email</th>
+
+            <th>Privilege</th>
+        </tr>
+      </thead>
+      
+      <tbody id="membersTableBody" >
+        <tr>
+        
+
+        </tr>
+        
+      </tbody>
+    </table>
+  </section>
+    
+  <script>
+ document.addEventListener("DOMContentLoaded", function () {
+    fetch("/getMembers")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            const tableBody = document.getElementById("membersTableBody");
+            if (!tableBody) {
+                console.error("Table body not found!");
+                return;
+            }
+            tableBody.innerHTML = "";
+
+            data.forEach((member) => {
+                const row = document.createElement("tr");
+
+                // Format the JoinDate if necessary
+                const joinDate = new Date(member.JoinDate).toLocaleDateString();
+
+                row.innerHTML = `
+
+                    <td>${member.MemberName}</td>
+                    <td>${member.Email}</td>
+                    <td class="${member.Privilege}">${member.Privilege}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching members:", error);
+        });
+});
+
+  </script>
+  <!-- Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Scroll to the members table on button click
+        document.getElementById("view-members-btn").addEventListener("click", function () {
+            document.querySelector(".member-list").scrollIntoView({ behavior: "smooth" });
+        });
+    });
+</script>
+
+<footer class="main-footer">
+  <div class="footer-content">
+      <p>&copy; 2025 BZU Astronomy Club. All rights reserved.</p>
+
+
+
+     </div>
+</footer>
+
+</body>
+</html>

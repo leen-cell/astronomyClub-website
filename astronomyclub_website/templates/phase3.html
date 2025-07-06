@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>phase 3</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #346f95;
+            font-family: Arial, sans-serif;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 18px;
+            border: none;
+            background-color: #000000;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Optional CSS to add some styling */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+<h1>table of members</h1>
+<table id="members">
+    <thead>
+    <tr>
+        <th>MemberID</th>
+        <th>MemberName</th>
+        <th>Email</th>
+        <th>joinDate</th>
+        <th>Privilege</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Data will be inserted using JavaScript from DB -->
+    </tbody>
+</table>
+
+<div class="button-container">
+    <button id="insertButton1">insert</button>
+    <button id="deleteButton1">delete</button>
+    <button>search</button>
+
+</div>
+<div class="delete-container">
+    <input type="number" style="display:none" id="memberIdInput" placeholder="Enter Member ID to delete"/>
+    <button id="deleteButton" style="display:none ">delete</button>
+</div>
+<div>
+
+    <form id="insertForm" style="display: none">
+        <h2>Insert a New Member</h2>
+        <label for="memberId">Member ID:</label>
+        <input type="text" id="memberId" placeholder="Enter Member ID" required><br><br>
+
+        <label for="memberName">Member Name:</label>
+        <input type="text" id="memberName" placeholder="Enter Member Name" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter Email Address" required><br><br>
+
+        <label for="joinDate">Join Date:</label>
+        <input type="date" id="joinDate" required><br><br>
+
+        <label for="privilege">Privilege:</label>
+        <select id="privilege" required>
+            <option value="Admin">Admin</option>
+            <option value="Member">Member</option>
+        </select><br><br>
+
+        <button type="button" id="insertButton">Insert</button>
+    </form>
+</div>
+<script>
+    //function to get data from backend and DB
+    async function fetchData() {
+        try {
+            const response = await fetch('/getMembers');  // Fetch data from Flask backend
+            const data = await response.json();  // Parse the JSON data
+
+            // Get the table body
+            const tableBody = document.querySelector('#members tbody');
+            tableBody.innerHTML = '';  // Clear any existing rows
+
+
+            data.forEach(members => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${members.MemberID}</td><td>${members.MemberName}</td><td>${members.Email}</td><td>${members.joinDate}</td><td>${members.Privilege}</td>`;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    // Call the fetchData function when the page loads
+    window.onload = fetchData;
+
+    document.getElementById('deleteButton1').addEventListener('click', async () => {
+        document.getElementById('deleteButton').style.display = 'inline'
+        document.getElementById('memberIdInput').style.display = 'inline'
+    })
+
+    document.getElementById('insertButton1').addEventListener('click', async () => {
+        document.getElementById('insertForm').style.display = 'inline'
+    })
+
+</script>
+
+<script>
+    //delete script
+
+    document.getElementById('deleteButton').addEventListener('click', async () => {
+            const memberId = document.getElementById('memberIdInput').value;
+            if (!memberId || isNaN(memberId) || Number(memberId) < 0) {
+                alert("please enter a memberID!");
+                return;
+            }
+            try {
+                const response = await fetch('/deleteMembers', {
+                    method: 'POST',
+                    headers: {
+                        'content-Type': 'application/json'
+                    }, body: JSON.stringify({id: memberId})
+                });
+                if (response.ok) {
+                    alert("member deleted successfully");
+                    document.getElementById('deleteButton').style.display = 'none'
+                    document.getElementById('memberIdInput').style.display = 'none'
+                    //to show the deletion
+                    await fetchData();
+                } else {
+                    const error = await response.json();
+                    alert(`Error:${error.message}`);
+                }
+            } catch (error) {
+                console.error('error deleting the member', error);
+
+            }
+
+        }
+    )
+
+
+</script>
+<script>
+    //insert script
+
+    document.getElementById('insertButton').addEventListener('click', async () => {
+            const insertForm = document.getElementById('insertForm');
+            const memberId = insertForm.querySelector('#memberId').value;
+            const memberName = insertForm.querySelector('#memberName').value;
+            const email = insertForm.querySelector('#email').value;
+            const joindate = insertForm.querySelector('#joinDate').value;
+            const privilege = insertForm.querySelector('#privilege').value;
+
+            if (!memberId || !memberName || !email || !joindate || !privilege) {
+                alert("please fill all fields!");
+                return;
+            }
+            try {
+                const response = await fetch('/InsertMembers', {
+                    method: 'POST',
+                    headers: {
+                        'content-Type': 'application/json'
+                    }, body: JSON.stringify({
+                        id: memberId,
+                        name: memberName,
+                        email: email,
+                        date: joindate,
+                        privileges: privilege
+                    })
+                });
+                if (response.ok) {
+                    alert("member inserted successfully");
+                    document.getElementById('insertForm').style.display = 'none'
+                    await fetchData();
+                } else {
+                    const error = await response.json();
+                    alert(`Error:${error.message}`);
+                }
+            } catch (error) {
+                console.error('error inserting the member', error);
+
+            }
+
+        }
+    )
+
+
+</script>
+
+<div>
+    <h2>Search Member by ID</h2>
+    <input type="number" id="searchMemberId" placeholder="Enter Member ID"/>
+    <button id="searchButton">Search</button>
+</div>
+<div id="searchResult" style="margin-top: 20px;"></div>
+
+<script>
+    // Search script
+    document.getElementById('searchButton').addEventListener('click', async () => {
+        const memberId = document.getElementById('searchMemberId').value;
+
+        if (!memberId || isNaN(memberId) || Number(memberId) <= 0) {
+            alert("Please enter a valid Member ID!");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/searchMember/${memberId}`);
+            if (response.ok) {
+                const member = await response.json();
+                const resultDiv = document.getElementById('searchResult');
+                resultDiv.innerHTML = `
+                    <table border="1">
+                        <tr>
+                            <th>MemberID</th>
+                            <th>MemberName</th>
+                            <th>Email</th>
+                            <th>JoinDate</th>
+                            <th>Privilege</th>
+                        </tr>
+                        <tr>
+                            <td>${member.MemberID}</td>
+                            <td>${member.MemberName}</td>
+                            <td>${member.Email}</td>
+                            <td>${member.joinDate}</td>
+                            <td>${member.Privilege}</td>
+                        </tr>
+                    </table>`;
+            } else if (response.status === 404) {
+                alert("Member not found!");
+            } else {
+                alert("Error fetching member details.");
+            }
+        } catch (error) {
+            console.error('Error searching for member:', error);
+        }
+    });
+</script>
+
+
+</body>
+</html>

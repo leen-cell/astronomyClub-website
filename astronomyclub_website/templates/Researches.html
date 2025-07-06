@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""/>
+    <link
+            rel="stylesheet"
+            as="style"
+            onload="this.rel='stylesheet'"
+            href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title> Researches </title>
+    <link rel="stylesheet" href="/static/assets/css/Researches.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900"
+          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""/>
+    <link
+            rel="stylesheet"
+            as="style"
+            onload="this.rel='stylesheet'"
+            href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+
+
+    />
+
+    <title> images</title>
+    <link rel="stylesheet" href="/static/assets/css/imageStyle.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="static/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="static/assets/css/owl.css">
+    <link rel="stylesheet" href="static/assets/css/lightbox.css">
+    <link rel="stylesheet" href="static/assets/css/AstroClub.css">
+
+
+</head>
+
+
+<body>
+<header class="main-header clearfix" role="header" style="background-color: #162239FC;">
+    <div class="logo">
+        <a href="/"><em>BZU Astronomy</em> Club</a>
+    </div>
+</header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select the Login link
+        const loginLink = document.querySelector('a[href="/AdminLogin"]');
+
+        // Check if the link exists
+        if (loginLink) {
+            loginLink.addEventListener('click', function (event) {
+                event.preventDefault();  // Prevent the default behavior
+
+                // Navigate to the AdminLogin page
+                window.location.href = loginLink.getAttribute('href');
+            });
+        }
+    });
+</script>
+
+
+
+
+
+<!-- Photo Section -->
+<section class="photo-section">
+    <div class="text-content">
+        <h1>
+            <span class="color1">ASTRONOMY CLUB</span>
+            <span class="color2">RESEARCHES</span>
+        </h1>
+        <p1>Explore a collection of research papers from our astronomy club members. Dive into topics about space,
+            celestial bodies, and the mysteries of the universe.
+        </p1>
+
+
+    </div>
+</section>
+
+<section class="research-slider-container" id="research-slider-container">
+    <p>Explore the fascinating research topics by our club members. Scroll through their discoveries.</p>
+
+    <!-- Slider Section -->
+</section>
+
+<script>
+
+
+fetch('/Research')
+    .then(response => response.json())
+    .then(data => {
+        const researchList = document.getElementById('research-slider-container');  // Corrected targeting for the research list
+        console.log(data);
+        data.forEach(research => {
+            const researchCard = document.createElement('div');
+            researchCard.classList.add('research-card');  // Keeping the research-card class for styling
+
+            researchCard.innerHTML = `
+                <div class="research-info">
+                    <h3>${research.Title}</h3>
+                    <p><strong>Summary:</strong> ${research.summary}</p>
+                    <p><strong>Members:</strong> ${Array.isArray(research.members) ? research.members.join(', ') : 'No members available'}</p>
+                    <p><strong>Link:</strong> <a href="${research.FileURL}" target="_blank">View Research</a></p>
+                </div>
+            `;
+
+            researchList.appendChild(researchCard);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching research data:', error);
+    });
+
+
+    // Slider functionality
+    let currentIndex = 0;
+    const cards = document.querySelectorAll('.research-card');
+    const totalCards = cards.length;
+
+    // Function to update the slider based on the current index
+    function updateSliderPosition() {
+        const sliderTrack = document.querySelector('.slider-track');
+        sliderTrack.style.transform = `translateX(-${currentIndex * (cards[0].offsetWidth + 20)}px)`;
+    }
+
+    // Mouse Wheel Event Listener
+    document.querySelector('.slider-container').addEventListener('wheel', (event) => {
+        if (event.deltaY > 0) {
+            // Scroll Down (Next Slide)
+            currentIndex = (currentIndex + 1) % totalCards;
+        } else {
+            // Scroll Up (Previous Slide)
+            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+        }
+        updateSliderPosition();
+    });
+
+    // Mouse Move Event Listener (Horizontal Scroll)
+    let startX = 0;
+    let isMouseDown = false;
+
+    document.querySelector('.slider-container').addEventListener('mousedown', (event) => {
+        isMouseDown = true;
+        startX = event.pageX;
+        event.preventDefault();  // Prevent default behavior
+    });
+
+    document.querySelector('.slider-container').addEventListener('mouseup', () => {
+        isMouseDown = false;
+    });
+
+    document.querySelector('.slider-container').addEventListener('mousemove', (event) => {
+        if (isMouseDown) {
+            const moveDistance = startX - event.pageX;
+            const moveIndex = Math.floor(moveDistance / 200); // Adjust the sensitivity of movement
+
+            // Update the slider index based on mouse movement
+            if (moveIndex !== 0) {
+                currentIndex -= moveIndex;
+                if (currentIndex < 0) {
+                    currentIndex = totalCards - 1; // Loop to the last card
+                } else if (currentIndex >= totalCards) {
+                    currentIndex = 0; // Loop to the first card
+                }
+                updateSliderPosition();
+                startX = event.pageX; // Reset starting position
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900"
+          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""/>
+    <link
+            rel="stylesheet"
+            as="style"
+            onload="this.rel='stylesheet'"
+            href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+
+
+    />
+
+    <title> images</title>
+    <link rel="stylesheet" href="/static/assets/css/imageStyle.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="static/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="static/assets/css/owl.css">
+    <link rel="stylesheet" href="static/assets/css/lightbox.css">
+    <link rel="stylesheet" href="static/assets/css/AstroClub.css">
+</head>
+
+
+<body>
+
+<header class="main-header clearfix" role="header" style="background-color: #162239FC;">
+    <div class="logo">
+        <a href="/"><em>BZU Astronomy</em> Club</a>
+    </div>
+</header>
+<!-- head section and search bar  : Mahmoud   -->
+
+<section class="head-section">
+    <div class="content-wrapper">
+        <div class="photo-gallery">
+            <div class="text-content">
+                <h1>Photos Gallery</h1>
+                <h2>Check out the stunning photos our members have taken</h2>
+                <button id="view-photos-btn" class="view-photos-btn">View Photos</button>
+
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+<!-- head section and search bar  : Mahmoud   -->
+
+<div class="gallery-wrapper">
+    <div class="gallery-container" id="gallery-section">
+        <!-- Photos are added dynamically here -->
+    </div>
+  <div class="arrow-container">
+        <button class="scroll-btn left-btn" id="prev-btn">&#8592;</button>
+        <button class="scroll-btn right-btn" id="next-btn">&#8594;</button>
+    </div>
+</div>
+<script>
+    //to create cards dynamically while taking data from DB
+    fetch('/photosforPage')
+        .then(response => response.json())
+        .then (data=> {
+            const galleryContainer = document.getElementById('gallery-section');
+           console.log(data);
+           data.forEach(photo => {
+               const photoCard = document.createElement('div');
+               photoCard.classList.add('photo-card');
+
+               photoCard.innerHTML =`
+              <div class="photo" style="background-image: url('${photo.photoURL}');"></div>
+              <div class="photo-info">
+               <h3>${photo.Title}</h3>
+                        <p><strong>Time:</strong> ${photo.DateTaken}</p>
+                        <p><strong>Sky Data:</strong> ${photo.skyData}</p>
+                        <p><strong>telescope:</strong> ${photo.TelescopeName}</p>
+                </div>
+               `;
+
+               galleryContainer.appendChild(photoCard);
+
+
+
+               });
+        })
+     .catch(error => {
+        console.error('Error fetching photos:', error);
+    });
+
+//for the buttons :
+    const gallerySection = document.getElementById('gallery-section');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+
+prevBtn.addEventListener('click', () => {
+    gallerySection.scrollBy({
+        left: -300,
+        behavior: 'smooth'
+    });
+});
+
+nextBtn.addEventListener('click', () => {
+    gallerySection.scrollBy({
+        left: 300,
+        behavior: 'smooth'
+    });
+});
+
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('view-photos-btn').addEventListener('click', function () {
+            const gallerySection = document.getElementById('gallery-section');
+            if (gallerySection) {
+                gallerySection.scrollIntoView({behavior: 'smooth'});
+            } else {
+                console.error('Section with id "gallery-section" not found!');
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

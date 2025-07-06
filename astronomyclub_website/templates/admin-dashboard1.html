@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/assets/css/Researches.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin Dashboard</title>
+    <style>
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        /* Ensure photos are displayed in a small size */
+        .table-photo {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .actions button {
+            padding: 10px 15px;
+            background-color: #a859b2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .actions input {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .tabs-container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tablink {
+            background-color: #a859b2;
+            color: white;
+            border: none;
+            outline: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .tablink:hover {
+            background-color: #ffd245;
+            color: black;
+            transform: scale(1.1);
+        }
+
+        .tablink.active {
+            background-color: #346f95;
+            color: white;
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+
+        .tables-section {
+            padding-top: 100px;
+            overflow-y: auto;
+        }
+
+        .action-buttons-container {
+            display: flex;
+            justify-content: space-between; /* Ensure buttons are spaced out */
+            align-items: center; /* Vertically center the buttons */
+        }
+
+        /* General button styling */
+        .action-button {
+            background-color: #346f95;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        /* Hover effect */
+        .action-button:hover {
+            background-color: #1f5270;
+            transition: all 200ms ease-in-out;
+        }
+/* mahmoud ___________________________________________________________________________ */
+#resultsContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#resultsContainer table, #resultsContainer th, #resultsContainer td {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 8px;
+}
+
+#resultsContainer th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+  /* mahmoud  Search result button___________________________________________________________________________ */ 
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content button {
+    background-color: #346f95;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #1f5270;
+}
+/* end update */
+
+    </style>
+</head>
+
+<body>
+<header class="main-header clearfix" role="header" style="background-color: #162239FC;">
+    <div class="logo">
+        <a href="/"><em>BZU Astronomy</em> Club</a>
+    </div>
+</header>
+<div id="insertMessage" style="display: none; margin-top: 10px; color: green;"></div>
+<section class="tables-section">
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tablink active" onclick="openTab(event, 'members')">Members</button>
+            <button class="tablink" onclick="openTab(event, 'Photos')">Photos</button>
+            <button class="tablink" onclick="openTab(event, 'Research')">Research</button>
+            <button class="tablink" onclick="openTab(event, 'Resources')">Resources</button>
+            <button class="tablink" onclick="openTab(event, 'Telescopes')">Telescopes</button>
+            <button class="tablink" onclick="openTab(event, 'Events')">Events</button>
+        </div>
+
+        <div id="members" class="tabcontent" style="display: block;">
+            <div class="actions">
+                <button onclick="insertRow('members')">Search</button>
+                <input type="text" placeholder="Search..." onkeyup="searchTableMembers('Members', this)">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Member ID</th>
+                    <th>Member Name</th>
+                    <th>Email</th>
+                    <th>Join Date</th>
+                    <th>Privilege</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Data rows will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="Photos" class="tabcontent">
+            <div class="actions">
+                <button onclick="insertRow('photos')">Search</button>
+                <input type="text" placeholder="Search..." onkeyup="searchTablePhotos('Photos', this)">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Photo ID</th>
+                    <th>Title</th>
+                    <th>Photo</th>
+                    <th>Date Taken</th>
+                    <th>Resolution</th>
+                    <th>Sky Data</th>
+                    <th>Telescope ID</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Populate dynamically with backend data -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="Research" class="tabcontent">
+            <div class="actions">
+                <button onclick="insertRow('research')">Search</button>
+                <input type="text" placeholder="Search..." onkeyup="searchTableResarch('Research', this)">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Research ID</th>
+                    <th>Title</th>
+                    <th>Summary</th>
+                    <th>File</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Populate dynamically with backend data -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="Resources" class="tabcontent">
+            <div class="actions">
+                <button onclick="insertRow('resources')">Search</button>
+                <input type="text" placeholder="Search..." onkeyup="searchTableResource('Resources', this)">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Resource ID</th>
+                    <th>Name</th>
+                    <th>URL</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Populate dynamically with backend data -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="Telescopes" class="tabcontent">
+            <div class="actions">
+                <button onclick="insertRow('telescopes')">Search</button>
+                <input type="text" placeholder="Search..." onkeyup="searchTableTelscope('Telescopes', this)">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Telescope ID</th>
+                    <th>Name</th>
+                    <th>Condition</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Populate dynamically with backend data -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="Events" class="tabcontent">
+            <div class="actions">
+                <button onclick="insertRow('events')">Search</button>
+                <input type="text" placeholder="Search..." onkeyup="searchTableEvent('Events', this)">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Event ID</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>People</th>
+                    <th>Location</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Photo</th>
+                    <th>Description</th>
+                    <th>Upcoming</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Populate dynamically with backend data -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+    function openTab(event, tableName) {
+        var i, tabcontent, tablink;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablink = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablink.length; i++) {
+            tablink[i].className = tablink[i].className.replace(" active", "");
+        }
+        document.getElementById(tableName).style.display = "block";
+        event.currentTarget.className += " active";
+    }
+
+
+    function insertRow(tableId) {
+        // Logic to insert a new row
+    }
+
+
+    function updateRow(button) {
+        // Logic to update the row
+    }
+
+    function deleteRow(button) {
+        // Logic to delete the row
+    }
+</script>
+<script>
+    async function fetchData1() {
+        try {
+            const response = await fetch('/getMembers');
+            const data = await response.json();
+
+            const tableBody = document.querySelector('#members tbody');
+            tableBody.innerHTML = '';
+
+
+            data.forEach(member => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${member.MemberID}</td>
+                        <td>${member.MemberName}</td>
+                        <td>${member.Email}</td>
+                        <td>${member.joinDate}</td>
+                        <td>${member.Privilege}</td>
+                        <td>
+                                <div class="action-buttons-container">
+        <button class="action-button" onclick="updateRow(this)">Update</button>
+        <button class="action-button" onclick="deleteRow(this)">Delete</button>
+    </div>
+                        </td>
+                    `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+
+    async function fetchData2() {
+        try {
+            const response = await fetch('/getadminPhotos');
+            const data = await response.json();
+
+            const tableBody = document.querySelector('#Photos tbody');
+            tableBody.innerHTML = '';
+//remember to show it as a photo later
+
+            data.forEach(photo => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${photo.photoID}</td>
+                <td>${photo.Title}</td>
+                <td><a href="${photo.PhotoURL}" target="_blank">${photo.photoURL}</a></td>
+                <td>${photo.DateTaken}</td>
+                <td>${photo.resolution || 'No data'}</td>
+                <td>${photo.skyData || 'No data'}</td>
+                <td>${photo.TelescopeID}</td>
+                <td>
+    <div class="action-buttons-container">
+        <button class="action-button" onclick="updateRow(this)">Update</button>
+        <button class="action-button" onclick="deleteRow(this)">Delete</button>
+    </div>
+                </td>
+            `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    async function fetchData3() {
+        try {
+            const response = await fetch('/getadminResearch');
+            const data = await response.json();
+
+            const tableBody = document.querySelector('#Research tbody');
+            tableBody.innerHTML = '';
+            //remember to show it as a pdf
+            console.log(data);
+            data.forEach(research => {
+                console.log(research)
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${research.ResearchID}</td>
+                <td>${research.Title}</td>
+                <td>${research.TheSummary}</td>
+                <td><a href="${research.FileURL}" target="_blank">${research.FileURL}</a></td>
+                <td>
+              <div class="action-buttons-container">
+               <button class="action-button" onclick="updateRow(this)">Update</button>
+                <button class="action-button" onclick="deleteRow(this)">Delete</button>
+                 </div>
+                </td>
+            `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    async function fetchData4() {
+        try {
+            const response = await fetch('/getadminResource');
+            const data = await response.json();
+
+            const tableBody = document.querySelector('#Resources tbody');
+            tableBody.innerHTML = '';
+            //remember to show it as a pdf
+            console.log(data);
+            data.forEach(resource => {
+                console.log(resource)
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${resource.resourceID}</td>
+                <td>${resource.resourceName}</td>
+                <td><a href="${resource.URL}" target="_blank">${resource.URL}</a></td>
+                <td>
+              <div class="action-buttons-container">
+               <button class="action-button" onclick="updateRow(this)">Update</button>
+                <button class="action-button" onclick="deleteRow(this)">Delete</button>
+                 </div>
+                </td>
+            `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    async function fetchData5() {
+        try {
+            const response = await fetch('/getadminTelescopes');
+            const data = await response.json();
+            console.log(data)
+            const tableBody = document.querySelector('#Telescopes tbody');
+            tableBody.innerHTML = '';
+            //remember to show it as a pdf
+            console.log(data);
+            data.forEach(telescope => {
+                console.log(telescope)
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${telescope.TelescopeID}</td>
+                <td>${telescope.TheName}</td>
+               <td>${telescope.Thecondition}</td>
+                <td>
+              <div class="action-buttons-container">
+               <button class="action-button" onclick="updateRow(this)">Update</button>
+                <button class="action-button" onclick="deleteRow(this)">Delete</button>
+                 </div>
+                </td>
+            `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    async function fetchData6() {
+        try {
+            const response = await fetch('/getadminEvents');
+            const data = await response.json();
+            console.log(data)
+            const tableBody = document.querySelector('#Events  tbody');
+            tableBody.innerHTML = '';
+            //remember to show it as a photo
+            console.log(data);
+            data.forEach(event => {
+                console.log(event)
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${event.EventID}</td>
+                <td>${event.EventName}</td>
+               <td>${event.TheDate}</td>
+               <td>${event.numberOFPeople}</td>
+               <td>${event.location}</td>
+               <td>${event.startTime}</td>
+               <td>${event.endTime}</td>
+                <td><a href="${event.PhotoURL}" target="_blank">${event.PhotoURL}</a></td>
+                <td>${event.description}</td>
+                <td>${event.is_upcoming}</td>
+                <td>
+              <div class="action-buttons-container">
+               <button class="action-button" onclick="updateRow(this)">Update</button>
+                <button class="action-button" onclick="deleteRow(this)">Delete</button>
+                 </div>
+                </td>
+            `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+
+    window.onload = function () {
+        fetchData1();
+        fetchData2();
+        fetchData3();
+        fetchData4();
+        fetchData5();
+        fetchData6();
+    };
+
+    // -------------------------------- Mahmoud search button 
+function showModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+}
+function insertRow(tableId) {
+    // عملية الإدراج
+    const message = document.getElementById('insertMessage');
+    const success = true; 
+
+    if (success) {
+        message.style.display = 'block';
+        message.textContent = '   succses !';
+        setTimeout(() => message.style.display = 'none', 3000);
+    } else {
+        message.style.display = 'block';
+        message.style.color = 'red';
+        message.textContent = 'succses!';
+    }
+}
+
+
+</script>
+
+
+<script>
+    function searchTableMembers(tableId, input) {
+        const filter = input.value.toUpperCase();
+        const table = document.querySelector(`#${tableId} table`);
+        const rows = table.querySelectorAll('tbody tr');
+        let found = false;
+        let resultHTML = '';
+
+        rows.forEach(row => {
+            const idCell = row.querySelector('td:first-child');
+            if (idCell && idCell.textContent.toUpperCase().includes(filter)) {
+                found = true;
+                resultHTML += `<tr>${row.innerHTML}</tr>`;
+            }
+        });
+
+        if (found) {
+            const resultsContainer = document.createElement('div');
+            resultsContainer.id = 'searchResultsModal';
+            resultsContainer.className = 'modal';
+            resultsContainer.innerHTML = `
+                <div class="modal-content">
+                    <p>Search Results:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Member ID</th>
+                                <th>Member Name</th>
+                                <th>Email</th>
+                                <th>Join Date</th>
+                                <th>Privilege</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>${resultHTML}</tbody>
+                    </table>
+                    <button onclick="closeModal('searchResultsModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(resultsContainer);
+        } else {
+            document.getElementById('errorModal').style.display = 'block';
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove();
+        } else {
+            const errorModal = document.getElementById('errorModal');
+            if (errorModal) errorModal.style.display = 'none';
+        }
+    }
+</script>
+
+<script>
+    function searchTablePhotos(tableId, input) {
+        const filter = input.value.toUpperCase();
+        const table = document.querySelector(`#${tableId} table`);
+        const rows = table.querySelectorAll('tbody tr');
+        let found = false;
+        let resultHTML = '';
+
+        rows.forEach(row => {
+            const idCell = row.querySelector('td:first-child');
+            if (idCell && idCell.textContent.toUpperCase().includes(filter)) {
+                found = true;
+                resultHTML += `<tr>${row.innerHTML}</tr>`;
+            }
+        });
+
+        if (found) {
+            const resultsContainer = document.createElement('div');
+            resultsContainer.id = 'searchResultsModal';
+            resultsContainer.className = 'modal';
+            resultsContainer.innerHTML = `
+                <div class="modal-content">
+                    <p>Search Results for Photos:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Photo ID</th>
+                                <th>Title</th>
+                                <th>Photo</th>
+                                <th>Date Taken</th>
+                                <th>Resolution</th>
+                                <th>Sky Data</th>
+                                <th>Telescope ID</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>${resultHTML}</tbody>
+                    </table>
+                    <button onclick="closeModal('searchResultsModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(resultsContainer);
+        } else {
+            const errorModal = document.createElement('div');
+            errorModal.id = 'errorModal';
+            errorModal.className = 'modal';
+            errorModal.innerHTML = `
+                <div class="modal-content">
+                    <p>No matching photos found!</p>
+                    <button onclick="closeModal('errorModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(errorModal);
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove();
+        }
+    }
+</script>
+
+
+
+<script>
+    function searchTableResarch(tableId, input) {
+        const filter = input.value.toUpperCase();
+        const table = document.querySelector(`#${tableId} table`);
+        const rows = table.querySelectorAll('tbody tr');
+        let found = false;
+        let resultHTML = '';
+
+        rows.forEach(row => {
+            const idCell = row.querySelector('td:first-child');
+            if (idCell && idCell.textContent.toUpperCase().includes(filter)) {
+                found = true;
+                resultHTML += `<tr>${row.innerHTML}</tr>`;
+            }
+        });
+
+        if (found) {
+            const resultsContainer = document.createElement('div');
+            resultsContainer.id = 'searchResultsModal';
+            resultsContainer.className = 'modal';
+            resultsContainer.innerHTML = `
+                <div class="modal-content">
+                    <p>Search Results for Research:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Research ID</th>
+                                <th>Title</th>
+                                <th>Summary</th>
+                                <th>File</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>${resultHTML}</tbody>
+                    </table>
+                    <button onclick="closeModal('searchResultsModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(resultsContainer);
+        } else {
+            const errorModal = document.createElement('div');
+            errorModal.id = 'errorModal';
+            errorModal.className = 'modal';
+            errorModal.innerHTML = `
+                <div class="modal-content">
+                    <p>No matching research found!</p>
+                    <button onclick="closeModal('errorModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(errorModal);
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove();
+        }
+    }
+</script>
+
+<script>
+    function searchTableResource(tableId, input) {
+        const filter = input.value.toUpperCase();
+        const table = document.querySelector(`#${tableId} table`);
+        const rows = table.querySelectorAll('tbody tr');
+        let found = false;
+        let resultHTML = '';
+
+        rows.forEach(row => {
+            const idCell = row.querySelector('td:first-child');
+            if (idCell && idCell.textContent.toUpperCase().includes(filter)) {
+                found = true;
+                resultHTML += `<tr>${row.innerHTML}</tr>`;
+            }
+        });
+
+        if (found) {
+            const resultsContainer = document.createElement('div');
+            resultsContainer.id = 'searchResultsModal';
+            resultsContainer.className = 'modal';
+            resultsContainer.innerHTML = `
+                <div class="modal-content">
+                    <p>Search Results for Resources:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Resource ID</th>
+                                <th>Name</th>
+                                <th>URL</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>${resultHTML}</tbody>
+                    </table>
+                    <button onclick="closeModal('searchResultsModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(resultsContainer);
+        } else {
+            const errorModal = document.createElement('div');
+            errorModal.id = 'errorModal';
+            errorModal.className = 'modal';
+            errorModal.innerHTML = `
+                <div class="modal-content">
+                    <p>No matching resources found!</p>
+                    <button onclick="closeModal('errorModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(errorModal);
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove();
+        }
+    }
+</script>
+
+
+
+<script>
+    function searchTableTelscope(tableId, input) {
+        const filter = input.value.toUpperCase();
+        const table = document.querySelector(`#${tableId} table`);
+        const rows = table.querySelectorAll('tbody tr');
+        let found = false;
+        let resultHTML = '';
+
+        rows.forEach(row => {
+            const idCell = row.querySelector('td:first-child');
+            if (idCell && idCell.textContent.toUpperCase().includes(filter)) {
+                found = true;
+                resultHTML += `<tr>${row.innerHTML}</tr>`;
+            }
+        });
+
+        if (found) {
+            const resultsContainer = document.createElement('div');
+            resultsContainer.id = 'searchResultsModal';
+            resultsContainer.className = 'modal';
+            resultsContainer.innerHTML = `
+                <div class="modal-content">
+                    <p>Search Results for Telescopes:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Telescope ID</th>
+                                <th>Name</th>
+                                <th>Condition</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>${resultHTML}</tbody>
+                    </table>
+                    <button onclick="closeModal('searchResultsModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(resultsContainer);
+        } else {
+            const errorModal = document.createElement('div');
+            errorModal.id = 'errorModal';
+            errorModal.className = 'modal';
+            errorModal.innerHTML = `
+                <div class="modal-content">
+                    <p>No matching telescopes found!</p>
+                    <button onclick="closeModal('errorModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(errorModal);
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove();
+        }
+    }
+</script>
+
+<script>
+    function searchTableEvent(tableId, input) {
+        const filter = input.value.toUpperCase();
+        const table = document.querySelector(`#${tableId} table`);
+        const rows = table.querySelectorAll('tbody tr');
+        let found = false;
+        let resultHTML = '';
+
+        rows.forEach(row => {
+            const idCell = row.querySelector('td:first-child');
+            if (idCell && idCell.textContent.toUpperCase().includes(filter)) {
+                found = true;
+                resultHTML += `<tr>${row.innerHTML}</tr>`;
+            }
+        });
+
+        if (found) {
+            const resultsContainer = document.createElement('div');
+            resultsContainer.id = 'searchResultsModal';
+            resultsContainer.className = 'modal';
+            resultsContainer.innerHTML = `
+                <div class="modal-content">
+                    <p>Search Results for Events:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Event ID</th>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>People</th>
+                                <th>Location</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Photo</th>
+                                <th>Description</th>
+                                <th>Upcoming</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>${resultHTML}</tbody>
+                    </table>
+                    <button onclick="closeModal('searchResultsModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(resultsContainer);
+        } else {
+            const errorModal = document.createElement('div');
+            errorModal.id = 'errorModal';
+            errorModal.className = 'modal';
+            errorModal.innerHTML = `
+                <div class="modal-content">
+                    <p>No matching events found!</p>
+                    <button onclick="closeModal('errorModal')">Close</button>
+                </div>
+            `;
+            document.body.appendChild(errorModal);
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove();
+        }
+    }
+</script>
+
+
+<!-- this for search button result : Mahmoud  --> 
+<div id="successModal" class="modal hidden">
+    <div class="modal-content">
+        <p> Sucsses Found !</p>
+        <button onclick="closeModal('successModal')">close</button>
+    </div>
+</div>
+
+<div id="errorModal" class="modal hidden">
+    <div class="modal-content">
+        <p>The Element Not Found </p>
+        <button onclick="closeModal('errorModal')">close</button>
+    </div>
+</div>
+ 
+</body>
+</html>

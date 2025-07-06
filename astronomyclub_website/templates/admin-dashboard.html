@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/assets/css/Researches.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin Dashboard</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .visible {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        /* Ensure photos are displayed in a small size */
+        .table-photo {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .actions button {
+            padding: 10px 15px;
+            background-color: #a859b2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .actions input {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .tabs-container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tablink {
+            background-color: #a859b2;
+            color: white;
+            border: none;
+            outline: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .tablink:hover {
+            background-color: #ffd245;
+            color: black;
+            transform: scale(1.1);
+        }
+
+        .tablink.active {
+            background-color: #346f95;
+            color: white;
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+
+        .tables-section {
+            padding-top: 100px;
+            overflow-y: auto;
+        }
+
+        .action-buttons-container {
+            display: flex;
+            justify-content: space-between; /* Ensure buttons are spaced out */
+            align-items: center; /* Vertically center the buttons */
+        }
+
+        /* General button styling */
+        .action-button {
+            background-color: #346f95;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        /* Hover effect */
+        .action-button:hover {
+            background-color: #1f5270;
+            transition: all 200ms ease-in-out;
+        }
+
+        /* Modal container */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Modal content */
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Close button */
+        .close {
+            color: black;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #9e77a0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form elements */
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Add space between form elements */
+        }
+
+        .modal-content form input,
+        .modal-content form textarea,
+        .modal-content form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px; /* Prettier font size */
+        }
+
+        /* Form actions */
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .form-actions button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #346f95;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-actions button:hover {
+            background-color: #1f5270;
+            transition: all 200ms ease-in-out;
+        }
+
+
+        .update-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+
+        /* Modal content for the update form */
+        .update-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 10px;
+        }
+
+        /* Close button for the update modal */
+        .update-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .update-close:hover,
+        .update-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form actions styling */
+        .update-modal .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* Button styling inside the update modal */
+        .update-modal button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<header class="main-header clearfix" role="header" style="background-color: #162239FC;">
+    <div class="logo">
+        <a href="/"><em>BZU Astronomy</em> Club</a>
+    </div>
+</header>
+<section class="tables-section">
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tablink active" onclick="openTab(event, 'members')">Members</button>
+            <button class="tablink" onclick="openTab(event, 'Photos')">Photos</button>
+            <button class="tablink" onclick="openTab(event, 'Research')">Research</button>
+            <button class="tablink" onclick="openTab(event, 'Resources')">Resources</button>
+            <button class="tablink" onclick="openTab(event, 'Telescopes')">Telescopes</button>
+            <button class="tablink" onclick="openTab(event, 'Events')">Events</button>
+        </div>
+
+        <div id="members" class="tabcontent" style="display: block;">
+            <div class="actions">
+                <button id="MembersInsert">Insert</button>
+                <input type="text" id="memberSearchInput" placeholder="Search..."/>
+                <button onclick="searchMember()">Search</button>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Member ID</th>
+                    <th>Member Name</th>
+                    <th>Email</th>
+                    <th>Join Date</th>
+                    <th>Privilege</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Data rows will be inserted here -->
+                </tbody>
+            </table>
+            <div id="insertFormContainer" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="toggleInsertForm()">&times;</span>
+                    <form id="insertForm">
+                        <h2>Insert New Member</h2>
+                        <label for="memberID">Member ID:</label>
+                        <input type="text" id="memberID" name="memberID" required>
+                        <label for="memberName">Member Name:</label>
+                        <input type="text" id="memberName" name="memberName" required>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                        <label for="joinDate">Join Date:</label>
+                        <input type="date" id="joinDate" name="joinDate" required>
+                        <label for="privilege">Privilege:</label>
+                        <input type="text" id="privilege" name="privilege" required>
+                        <div class="form-actions">
+                            <button type="submit">Submit</button>
+                            <button type="button" onclick="toggleInsertForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="updateMemberFormContainer" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="toggleUpdateMemberForm()">&times;</span>
+                    <form id="updateMemberForm">
+                        <h3>Update Member</h3>
+                        <label for="updateMemberID">Member ID:</label>
+                        <input type="text" id="updateMemberID" name="updateMemberID" disabled required>
+                        <label for="updateMemberName">Name:</label>
+                        <input type="text" id="updateMemberName" name="updateMemberName" required>
+                        <label for="updateEmail">Email:</label>
+                        <input type="email" id="updateEmail" name="updateEmail" required>
+                        <label for="updateJoinDate">Join Date:</label>
+                        <input type="date" id="updateJoinDate" name="updateJoinDate" required>
+                        <label for="updatePrivilege">Privilege:</label>
+                        <input type="text" id="updatePrivilege" name="updatePrivilege" required>
+                        <div class="form-actions">
+                            <button type="submit">Update Member</button>
+                            <button type="button" onclick="toggleUpdateMemberForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div id="searchMemberResults" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="toggleSearchMemberForm()">&times;</span>
+                    <table id="memberResultsTable">
+                        <thead>
+                        <tr>
+                            <th>Member ID</th>
+                            <th>Mmeber Name</th>
+                            <th>Email</th>
+                            <th>join Date</th>
+                            <th>Privilege</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script>
+            function toggleSearchMemberForm() {
+                var modal = document.getElementById("searchMemberResults");
+                if (modal.style.display === "none" || modal.style.display === "") {
+                    modal.style.display = "block";
+                } else {
+                    modal.style.display = "none";
+                }
+            }
+
+            function searchMember() {
+                var searchValue = document.getElementById("memberSearchInput").value;
+
+                if (!Number.isInteger(parseInt(searchValue)) || searchValue === "") {
+                    alert("Please enter a valid integer.");
+                    return;
+                }
+
+                fetch(`/searchMember/${searchValue}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+
+                        if (data.MemberID) {
+                            const tableBody = document.querySelector('#memberResultsTable tbody');
+                            tableBody.innerHTML = '';
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                        <td>${data.MemberID}</td>
+                        <td>${data.MemberName}</td>
+                        <td>${data.Email}</td>
+                        <td>${data.joinDate}</td>
+                        <td>${data.Privilege}</td>
+            `;
+                            tableBody.appendChild(row);
+                            toggleSearchMemberForm();
+                        } else {
+                            alert('member not found');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while fetching the member data');
+                    });
+            }
+
+
+            //insert member form control
+            document.getElementById('MembersInsert').addEventListener('click', toggleInsertForm);
+
+            function toggleInsertForm() {
+                const formContainer = document.getElementById('insertFormContainer');
+                formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+            }
+
+            document.getElementById('insertForm').addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const insertForm = event.target;
+                const memberId = insertForm.querySelector('#memberID').value;
+                const memberName = insertForm.querySelector('#memberName').value;
+                const email = insertForm.querySelector('#email').value;
+                const joinDate = insertForm.querySelector('#joinDate').value;
+                const privilege = insertForm.querySelector('#privilege').value;
+
+                try {
+                    const response = await fetch('/InsertMembers', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: memberId,
+                            name: memberName,
+                            email: email,
+                            date: joinDate,
+                            privileges: privilege
+                        })
+                    });
+
+                    if (response.ok) {
+                        alert("Member inserted successfully");
+                        toggleInsertForm(); // Hide the form after submission
+                        await fetchData1();
+                    } else {
+                        const error = await response.json();
+                        alert(`Error: ${error.message}`);
+
+                    }
+                } catch (error) {
+                    console.error('Error inserting the member:', error);
+
+                } finally {
+
+                    insertForm.reset();
+
+                }
+            });
+
+
+            //////////////update members//////////////////////////////////////////////////////////
+
+            async function UpdateMemberRow(memberID) {
+                try {
+                    const response = await fetch(`/searchMember/${memberID}`);
+                    const member = await response.json();
+                    console.log(member)
+
+                    document.getElementById('updateMemberID').value = member.MemberID;
+                    document.getElementById('updateMemberName').value = member.MemberName;
+                    document.getElementById('updateEmail').value = member.Email;
+                    document.getElementById('updateJoinDate').value = member.joinDate;
+                    document.getElementById('updatePrivilege').value = member.Privilege
+
+                    toggleUpdateMemberForm();
+
+                } catch (error) {
+                    console.error('Error fetching member details:', error);
+                }
+            }
+
+            function toggleUpdateMemberForm() {
+                const formContainer = document.getElementById("updateMemberFormContainer");
+                formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+
+            }
+
+            document.getElementById('updateMemberForm').addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const UpdateForm = event.target;
+                const memberID = document.getElementById('updateMemberID').value;
+                const memberName = document.getElementById('updateMemberName').value;
+                const email = document.getElementById('updateEmail').value;
+                const joinDate = document.getElementById('updateJoinDate').value;
+                const privilege = document.getElementById('updatePrivilege').value;
+
+                const formData = {
+                    updateMemberID: memberID,
+                    updateMemberName: memberName,
+                    updateEmail: email,
+                    updateJoinDate: joinDate,
+                    updatePrivilege: privilege
+                };
+
+                try {
+                    const response = await fetch('/UpdateMembers', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert("Member Updated successfully");
+                        toggleUpdateMemberForm();
+                        await fetchData1();
+                    } else {
+                        const error = await response.json();
+                        alert(`Error: ${error.message}`);
+                    }
+                } catch (error) {
+                    console.error('Error updating the member:', error);
+                }
+            });
+
+
+            async function fetchData1() {
+                try {
+                    const response = await fetch('/getMembers');
+                    const data = await response.json();
+
+                    const tableBody = document.querySelector('#members tbody');
+                    tableBody.innerHTML = '';
+
+
+                    data.forEach(member => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td>${member.MemberID}</td>
+                        <td>${member.MemberName}</td>
+                        <td>${member.Email}</td>
+                        <td>${member.joinDate}</td>
+                        <td>${member.Privilege}</td>
+                        <td>
+                                <div class="action-buttons-container">
+
+         <button class="action-button" onclick="UpdateMemberRow('${member.MemberID}')">Update</button>
+         <button class="action-button" onclick="deleteMemberRow('${member.MemberID}')">Delete</button>
+    </div>
+                        </td>
+                    `;
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+
+
+        </script>
+
+
+        <div id="Photos" class="tabcontent">
+            <div class="actions">
+                <button id="insertPhoto">Insert</button>
+                <input type="text" id="photoSearchInput" placeholder="Search..."/>
+                <button onclick="searchPhoto()">Search</button>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Photo ID</th>
+                    <th>Title</th>
+                    <th>Photo</th>
+                    <th>Date Taken</th>
+                    <th>Resolution</th>
+                    <th>Sky Data</th>
+                    <th>Telescope ID</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Populate dynamically with backend data -->
+                </tbody>
+            </table>
+            <div id="insertPhotoFormContainer" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="toggleInsertPhotoForm()">&times;</span>
+                    <form id="insertPhotoForm" enctype="multipart/form-data">
+                        <h2>Insert New Photo</h2>
+                        <label for="photoID">Photo ID:</label>
+                        <input type="text" id="photoID" name="photoID" required>
+
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" name="title" required>
+
+                        <label for="photo">Photo:</label>
+                        <input type="file" id="photo" name="photo" accept=".jpg" required
+                               onchange="checkPhotoExtension(event)">
+
+                        <label for="dateTaken">Date Taken:</label>
+                        <input type="date" id="dateTaken" name="dateTaken" required>
+
+                        <label for="resolution">Resolution:</label>
+                        <input type="text" id="resolution" name="resolution" required>
+
+                        <label for="skyData">Sky Data:</label>
+                        <input type="text" id="skyData" name="skyData" required>
+
+                        <label for="telescopeID">Telescope ID:</label>
+                        <input type="text" id="telescopeID" name="telescopeID" required>
+
+                        <div class="form-actions">
+                            <button type="submit">Submit</button>
+                            <button type="button" onclick="toggleInsertPhotoForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="updatePhotoFormContainer" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="toggleUpdatePhotoForm()">&times;</span>
+                    <form id="updatePhotoForm">
+                        <h3>Update Photo</h3>
+                        <label for="updatePhotoID">Photo ID:</label>
+                        <input type="text" id="updatePhotoID" name="updatePhotoID" disabled required>
+
+                        <label for="updateTitle">Title:</label>
+                        <input type="text" id="updateTitle" name="updateTitle" required>
+
+
+                        <label for="updateDateTaken">Date Taken:</label>
+                        <input type="date" id="updateDateTaken" name="updateDateTaken" required>
+
+                        <label for="updateResolution">Resolution:</label>
+                        <input type="text" id="updateResolution" name="updateResolution" required>
+
+                        <label for="updateSkyData">Sky Data:</label>
+                        <input type="text" id="updateSkyData" name="updateSkyData" required>
+
+                        <label for="updateTelescopeID">Telescope ID:</label>
+                        <input type="text" id="updateTelescopeID" name="updateTelescopeID" required>
+
+                        <div class="form-actions">
+                            <button type="submit">Submit</button>
+                            <button type="button" onclick="toggleUpdatePhotoForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div id="searchPhotoResults" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="toggleSearchPhotoForm()">&times;</span>
+                    <table id="photoResultsTable">
+                        <thead>
+                        <tr>
+                            <th>Photo ID</th>
+                            <th>Title</th>
+                            <th>Photo</th>
+                            <th>Date Taken</th>
+                            <th>Resolution</th>
+                            <th>Sky Data</th>
+                            <th>Telescope ID</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        function toggleSearchPhotoForm() {
+            var modal = document.getElementById("searchPhotoResults");
+            if (modal.style.display === "none" || modal.style.display === "") {
+                modal.style.display = "block";
+            } else {
+                modal.style.display = "none";
+            }
+        }
+
+        function searchPhoto() {
+            var searchValue = document.getElementById("photoSearchInput").value;
+
+            if (!Number.isInteger(parseInt(searchValue)) || searchValue === "") {
+                alert("Please enter a valid integer.");
+                return;
+            }
+
+            fetch(`/searchPhoto/${searchValue}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+
+                    if (data.PhotoID) {
+                        const tableBody = document.querySelector('#photoResultsTable tbody');
+                        tableBody.innerHTML = '';
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                <td>${data.PhotoID}</td>
+                <td>${data.Title}</td>
+                <td><img src="${data.photoURL}" alt="${data.Title}" width="100" height="100"></td>
+                <td>${data.DateTaken}</td>
+                <td>${data.resolution || 'No data'}</td>
+                <td>${data.skyData || 'No data'}</td>
+                <td>${data.TelescopeID || 'No data'}</td>
+            `;
+                        tableBody.appendChild(row);
+                        toggleSearchPhotoForm();
+                    } else {
+                        alert('photo not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while fetching the photo data');
+                });
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date().toISOString().split('T')[0];
+            console.log(today)
+            document.getElementById('dateTaken').setAttribute('max', today);
+        });
+
+        async function fetchData2() {
+            try {
+                const response = await fetch('/getadminPhotos');
+                const data = await response.json();
+
+                const tableBody = document.querySelector('#Photos tbody');
+                tableBody.innerHTML = '';
+
+
+                data.forEach(photo => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td>${photo.photoID}</td>
+                <td>${photo.Title}</td>
+                <td><img src="${photo.PhotoURL}" alt="${photo.Title}" width="100" height="100"></td>
+                <td>${photo.DateTaken}</td>
+                <td>${photo.resolution || 'No data'}</td>
+                <td>${photo.skyData || 'No data'}</td>
+                <td>${photo.TelescopeID || 'No data'}</td>
+                <td>
+    <div class="action-buttons-container">
+         <button class="action-button" onclick="updatePhotoRow('${photo.photoID}')">Update</button>
+         <button class="action-button" onclick="deletePhotoRow('${photo.photoID}')">Delete</button>
+    </div>
+                </td>
+            `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+
+        //insert photo functions
+        function checkPhotoExtension(event) {
+            const file = event.target.files[0];
+            if (file && !file.name.endsWith('.jpg')) {
+                alert('Only .jpg images are allowed!');
+                event.target.value = '';
+            }
+        }
+
+        document.getElementById('insertPhoto').addEventListener('click', toggleInsertPhotoForm);
+
+        function toggleInsertPhotoForm() {
+            const formContainer = document.getElementById('insertPhotoFormContainer');
+            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+        }
+
+
+        document.getElementById('insertPhotoForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const insertForm = event.target;
+            const formData = new FormData(insertForm);
+
+
+            try {
+                const response = await fetch('/UploadPhotos', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("photo inserted successfully");
+                    toggleInsertPhotoForm();
+                    await fetchData2();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message}`);
+
+                }
+            } catch (error) {
+                console.error('Error inserting the photo:', error);
+
+            } finally {
+
+                insertForm.reset();
+
+            }
+        });
+
+        //////////////update photo//////////////////////////////////////////////////////////
+
+        async function updatePhotoRow(photoID) {
+            try {
+                const response = await fetch(`/searchPhoto/${photoID}`);
+                const photo = await response.json();
+                console.log(photo)
+
+                document.getElementById('updatePhotoID').value = photo.PhotoID;
+                document.getElementById('updateTitle').value = photo.Title;
+                document.getElementById('updateDateTaken').value = photo.DateTaken;
+                document.getElementById('updateResolution').value = photo.resolution;
+                document.getElementById('updateSkyData').value = photo.skyData;
+                document.getElementById('updateTelescopeID').value = photo.TelescopeID;
+
+                toggleUpdatePhotoForm();
+
+            } catch (error) {
+                console.error('Error fetching photo details:', error);
+            }
+        }
+
+        function toggleUpdatePhotoForm() {
+            const formContainer = document.getElementById("updatePhotoFormContainer");
+            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+
+        }
+
+        document.getElementById('updatePhotoForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const UpdateForm = event.target;
+            const PhotoID = document.getElementById('updatePhotoID').value;
+            const Title = document.getElementById('updateTitle').value;
+            const DateTaken = document.getElementById('updateDateTaken').value;
+            const resolution = document.getElementById('updateResolution').value;
+            const skyData = document.getElementById('updateSkyData').value;
+            const TelescopeID = document.getElementById('updateTelescopeID').value;
+
+
+            const formData = {
+                updatePhotoID: PhotoID,
+                updateTitle: Title,
+                updateDateTaken: DateTaken,
+                updateResolution: resolution,
+                updateSkyData: skyData,
+                updateTelescopeID: TelescopeID
+
+            };
+
+            try {
+                const response = await fetch('/UpdatePhoto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert("Photo Updated successfully");
+                    toggleUpdatePhotoForm();
+                    await fetchData2();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating the photo:', error);
+            }
+        });
+
+    </script>
+
+
+    <div id="Research" class="tabcontent">
+        <div class="actions">
+            <button id="insertResearch">Insert</button>
+            <input type="text" id="researchSearchInput" placeholder="Search..."/>
+            <button onclick="searchResearch()">Search</button>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Research ID</th>
+                <th>Title</th>
+                <th>Summary</th>
+                <th>File</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Populate dynamically with backend data -->
+            </tbody>
+        </table>
+        <div id="insertResearchFormContainer" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleInsertResearchForm()">&times;</span>
+                <form id="insertResearchForm" enctype="multipart/form-data">
+                    <h2>Insert New Research</h2>
+                    <label for="ResearchID">Research ID:</label>
+                    <input type="text" id="ResearchID" name="ResearchID" required>
+
+                    <label for="Title">Title:</label>
+                    <input type="text" id="Title" name="Title" required>
+                    <label for="summary">The summary:</label>
+                    <input type="text" id="summary" name="summary">
+
+                    <label for="FileURL">The Research:</label>
+                    <input type="file" id="FileURL" name="FileURL" accept=".pdf" required>
+                    <label for="dateTaken">Date Taken:</label>
+
+
+                    <div id="membersSelection">
+                        <select id="selectingMembers" multiple>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" onclick="toggleInsertResearchForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="updateResearchFormContainer" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleUpdateResearchForm()">&times;</span>
+                <form id="updateResearchForm" enctype="multipart/form-data">
+                    <h2>Update Research</h2>
+                    <label for="updateResearchID">Research ID:</label>
+                    <input type="text" id="updateResearchID" name="updateResearchID" disabled required>
+
+                    <label for="updateTitleResearch">Title:</label>
+                    <input type="text" id="updateTitleResearch" name="updateTitleResearch" required>
+
+                    <label for="updateSummary">The summary:</label>
+                    <input type="text" id="updateSummary" name="updateSummary">
+
+
+                    <div class="form-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" onclick="toggleUpdateResearchForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="searchResearchResults" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleSearchResearchForm()">&times;</span>
+                <table id="researchResultsTable">
+                    <thead>
+                    <tr>
+                        <th>Research ID</th>
+                        <th>Title</th>
+                        <th>Summary</th>
+                        <th>Link</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                const response = await fetch('/getMembers');
+                const members = await response.json();
+
+                const membersContainer = document.getElementById('membersSelection');
+                const dropdown = document.getElementById("selectingMembers");
+
+                members.forEach(member => {
+                    let option = document.createElement("option");
+                    option.value = member.MemberID;
+                    option.text = member.MemberName;
+                    dropdown.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching members:', error);
+            }
+        });
+
+
+        function toggleSearchResearchForm() {
+            var modal = document.getElementById("searchResearchResults");
+            if (modal.style.display === "none" || modal.style.display === "") {
+                modal.style.display = "block";
+            } else {
+                modal.style.display = "none";
+            }
+        }
+
+        function searchResearch() {
+            var searchValue = document.getElementById("researchSearchInput").value;
+
+            if (!Number.isInteger(parseInt(searchValue)) || searchValue === "") {
+                alert("Please enter a valid integer.");
+                return;
+            }
+
+            fetch(`/searchResearch/${searchValue}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+
+                    if (data.ResearchID) {
+                        const tableBody = document.querySelector('#researchResultsTable tbody');
+                        tableBody.innerHTML = '';
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                <td>${data.ResearchID}</td>
+                <td>${data.Title}</td>
+                <td>${data.summary}</td>
+                <td><a href="${data.FileURL}" target="_blank">${data.FileURL}</a></td>
+            `;
+                        tableBody.appendChild(row);
+                        toggleSearchResearchForm();
+                    } else {
+                        alert('Research not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while fetching the research data');
+                });
+        }
+
+
+        function checkResearchExtension(event) {
+            const file = event.target.files[0];
+            if (file && !file.name.endsWith('.pdf')) {
+                alert('Only .pdf images are allowed!');
+                event.target.value = '';
+            }
+        }
+
+        document.getElementById('insertResearch').addEventListener('click', toggleInsertResearchForm);
+
+        function toggleInsertResearchForm() {
+            const formContainer = document.getElementById('insertResearchFormContainer');
+            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function getSelectValues(select) {
+            console.log(select);
+            var result = [];
+            var options = select && select.options;
+            var opt;
+
+            for (var i = 0, iLen = options.length; i < iLen; i++) {
+                opt = options[i];
+
+                if (opt.selected) {
+                    result.push(opt.value || opt.text);
+                }
+            }
+            return result;
+        }
+
+
+        document.getElementById('insertResearchForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const documentID = document.getElementById("ResearchID").value;
+            const researchName = document.getElementById("Title").value;
+            const summary = document.getElementById("summary").value;
+            const FileURL = document.getElementById("FileURL").files[0];
+            let membersSelected = getSelectValues(document.getElementById("selectingMembers"));
+
+            console.log(membersSelected);
+
+            let finalSelection = [];
+
+            let arr = membersSelected[0];
+
+
+            const insertForm = event.target;
+            const formData = new FormData();
+            formData.append("ResearchID", documentID);
+            formData.append("Title", researchName);
+            formData.append("summary", summary);
+            formData.append("FileURL", FileURL);
+            formData.append("membersSelection", membersSelected);
+
+
+            try {
+                const response = await fetch('/UploadResearch', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("Research inserted successfully");
+                    toggleInsertResearchForm();
+                    await fetchData3();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message}`);
+
+                }
+            } catch (error) {
+                console.error('Error inserting the research:', error);
+
+            } finally {
+
+                insertForm.reset();
+
+            }
+        });
+
+        async function fetchData3() {
+            try {
+                const response = await fetch('/getadminResearch');
+                const data = await response.json();
+
+                const tableBody = document.querySelector('#Research tbody');
+                tableBody.innerHTML = '';
+                //remember to show it as a pdf
+                console.log(data);
+                data.forEach(research => {
+                    console.log(research)
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td>${research.ResearchID}</td>
+                <td>${research.Title}</td>
+                <td>${research.TheSummary || 'No data'}</td>
+                <td><a href="${research.FileURL}" target="_blank">${research.FileURL}</a></td>
+                <td>
+              <div class="action-buttons-container">
+               <button class="action-button" onclick="updateResearchRow('${research.ResearchID}')">Update</button>
+                <button class="action-button" onclick="deleteResearchRow('${research.ResearchID}')">Delete</button>
+                 </div>
+                </td>
+            `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        async function updateResearchRow(ResearchID) {
+            try {
+                const response = await fetch(`/searchResearch/${ResearchID}`);
+                const research = await response.json();
+                console.log(research)
+
+                document.getElementById('updateResearchID').value = research.ResearchID;
+                document.getElementById('updateTitleResearch').value = research.Title;
+                document.getElementById('updateSummary').value = research.summary;
+                console.log(research.Title)
+                toggleUpdateResearchForm();
+
+            } catch (error) {
+                console.error('Error fetching research details:', error);
+            }
+        }
+
+        function toggleUpdateResearchForm() {
+            const formContainer = document.getElementById("updateResearchFormContainer");
+            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+
+        }
+
+        document.getElementById('updateResearchForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const UpdateForm = event.target;
+            const ResearchID = document.getElementById('updateResearchID').value;
+            const Title = document.getElementById('updateTitleResearch').value;
+            const summary = document.getElementById('updateSummary').value;
+
+
+            const formData = {
+                updateResearchID: ResearchID,
+                updateTitleResearch: Title,
+                updateSummary: summary
+
+
+            };
+
+            try {
+                const response = await fetch('/UpdateResearch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert("Research Updated successfully");
+                    toggleUpdateResearchForm();
+                    await fetchData3();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating the research:', error);
+            }
+        });
+
+    </script>
+
+    <div id="Resources" class="tabcontent">
+        <div class="actions">
+            <button id="insertResource">Insert</button>
+            <input type="text" id="resourceSearchInput" placeholder="Search..."/>
+            <button onclick="searchResource()">Search</button>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Resource ID</th>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Populate dynamically with backend data -->
+            </tbody>
+        </table>
+        <div id="insertResourceFormContainer" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleInsertResourceForm()">&times;</span>
+                <form id="insertResourceForm" enctype="multipart/form-data">
+                    <h2>Insert New Resource</h2>
+
+                    <label for="ResourceID">Resource ID:</label>
+                    <input type="text" id="ResourceID" name="ResourceID" required>
+
+                    <label for="resourceName">Resource Name:</label>
+                    <input type="text" id="resourceName" name="resourceName" required>
+
+                    <label for="resourceURL">URL:</label>
+                    <input type="url" id="resourceURL" name="resourceURL" required>
+
+                    <div class="form-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" onclick="toggleInsertResourceForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="updateResourceFormContainer" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleUpdateResourceForm()">&times;</span>
+                <form id="updateResourceForm" enctype="multipart/form-data">
+                    <h2>Update Resource</h2>
+
+                    <label for="updateResourceID">Resource ID:</label>
+                    <input type="text" id="updateResourceID" name="updateResourceID" required disabled>
+
+                    <label for="updateResourceName">Resource Name:</label>
+                    <input type="text" id="updateResourceName" name="updateResourceName" required>
+
+                    <label for="updateResourceURL">URL:</label>
+                    <input type="url" id="updateResourceURL" name="updateResourceURL" required>
+
+                    <div class="form-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" onclick="toggleUpdateResourceForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="searchResourceResults" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleSearchResourceForm()">&times;</span>
+                <table id="resourceResultsTable">
+                    <thead>
+                    <tr>
+                        <th>Resource ID</th>
+                        <th>Resource Name</th>
+                        <th>Link</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+            function toggleSearchResourceForm() {
+                var modal = document.getElementById("searchResourceResults");
+                if (modal.style.display === "none" || modal.style.display === "") {
+                    modal.style.display = "block";
+                } else {
+                    modal.style.display = "none";
+                }
+            }
+
+            function searchResource() {
+                var searchValue = document.getElementById("resourceSearchInput").value;
+
+                if (!Number.isInteger(parseInt(searchValue)) || searchValue === "") {
+                    alert("Please enter a valid integer.");
+                    return;
+                }
+
+                fetch(`/searchResource/${searchValue}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+
+                        if (data.resourceID) {
+                            const tableBody = document.querySelector('#resourceResultsTable tbody');
+                            tableBody.innerHTML = '';
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                        <td>${data.resourceID}</td>
+                        <td>${data.resourceName}</td>
+                        <td><a href="${data.URL}" target="_blank">${data.URL}</a></td>
+
+            `;
+                            tableBody.appendChild(row);
+                            toggleSearchResourceForm();
+                        } else {
+                            alert('Resource not found');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while fetching the resource data');
+                    });
+            }
+
+
+            document.getElementById('insertResource').addEventListener('click', toggleInsertResourceForm);
+
+            function toggleInsertResourceForm() {
+                const formContainer = document.getElementById('insertResourceFormContainer');
+                formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+            }
+
+
+            document.getElementById('insertResourceForm').addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const insertForm = event.target;
+                const formData = new FormData(insertForm);
+
+                try {
+                    const response = await fetch('/UploadResources', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        alert("Resource inserted successfully");
+                        toggleInsertResourceForm();
+                        await fetchData4();
+                    } else {
+                        const error = await response.json();
+                        alert(`Error: ${error.message}`);
+                    }
+                } catch (error) {
+                    console.error('Error inserting the resource:', error);
+                } finally {
+                    insertForm.reset();
+                }
+            });
+
+            async function updateResourceRow(resourceID) {
+                try {
+                    const response = await fetch(`/searchResource/${resourceID}`);
+                    const resource = await response.json();
+                    console.log(resource)
+
+                    document.getElementById('updateResourceID').value = resource.resourceID;
+                    document.getElementById('updateResourceName').value = resource.resourceName;
+                    document.getElementById('updateResourceURL').value = resource.URL;
+
+                    toggleUpdateResourceForm();
+
+                } catch (error) {
+                    console.error('Error fetching resource details:', error);
+                }
+            }
+
+            function toggleUpdateResourceForm() {
+                const formContainer = document.getElementById("updateResourceFormContainer");
+                formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+
+            }
+
+            document.getElementById('updateResourceForm').addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const UpdateForm = event.target;
+                const resourceID = document.getElementById('updateResourceID').value;
+                const resourceName = document.getElementById('updateResourceName').value;
+                const URL = document.getElementById('updateResourceURL').value;
+
+
+                const formData = {
+                    updateResourceID: resourceID,
+                    updateResourceName: resourceName,
+                    updateResourceURL: URL
+
+
+                };
+
+                try {
+                    const response = await fetch('/UpdateResource', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert("Resource Updated successfully");
+                        toggleUpdateResourceForm();
+                        await fetchData4();
+                    } else {
+                        const error = await response.json();
+                        alert(`Error: ${error.message}`);
+                    }
+                } catch (error) {
+                    console.error('Error updating the resource:', error);
+                }
+            });
+
+            async function fetchData4() {
+                try {
+                    const response = await fetch('/getadminResource');
+                    const data = await response.json();
+
+                    const tableBody = document.querySelector('#Resources tbody');
+                    tableBody.innerHTML = '';
+
+                    console.log(data);
+                    data.forEach(resource => {
+                        console.log(resource)
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                <td>${resource.resourceID}</td>
+                <td>${resource.resourceName}</td>
+                <td><a href="${resource.URL}" target="_blank">${resource.URL}</a></td>
+                <td>
+              <div class="action-buttons-container">
+               <button class="action-button" onclick="updateResourceRow('${resource.resourceID}')">Update</button>
+               <button class="action-button" onclick="deleteResourceRow('${resource.resourceID}')">Delete</button>
+                 </div>
+                </td>
+            `;
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+
+        </script>
+
+
+    </div>
+
+    <div id="Telescopes" class="tabcontent">
+        <div class="actions">
+            <button id="insertTelescope">Insert</button>
+            <input type="text" id="telescopeSearchInput" placeholder="Search..."/>
+            <button onclick="searchTelescope()">Search</button>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Telescope ID</th>
+                <th>Name</th>
+                <th>Condition</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Populate dynamically with backend data -->
+            </tbody>
+        </table>
+        <div id="insertTelescopeFormContainer" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleInsertTelescopeForm()">&times;</span>
+                <form id="insertTelescopeForm" enctype="multipart/form-data">
+                    <h2>Insert New Telescope</h2>
+
+                    <label for="TelescopeID">Telescope ID:</label>
+                    <input type="text" id="TelescopeID" name="TelescopeID" required>
+
+                    <label for="TheName">Telescope Name:</label>
+                    <input type="text" id="TheName" name="TheName" required>
+
+                    <label for="Thecondition">The Condition:</label>
+                    <input type="text" id="Thecondition" name="Thecondition" required>
+
+                    <div class="form-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" onclick="toggleInsertTelescopeForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="updateTelescopeFormContainer" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleUpdateTelescopeForm()">&times;</span>
+                <form id="updateTelescopeForm" enctype="multipart/form-data">
+                    <h2>update telescope</h2>
+
+                    <label for="updateTelescopeID2">Telescope ID:</label>
+                    <input type="text" id="updateTelescopeID2" name="updateTelescopeID2" required disabled>
+
+                    <label for="updateTelescopeName">Telescope Name:</label>
+                    <input type="text" id="updateTelescopeName" name="updateTelescopeName" required>
+
+                    <label for="updateTelescopeCondition">Telescope Name:</label>
+                    <input type="text" id="updateTelescopeCondition" name="updateTelescopeCondition" required>
+
+
+                    <div class="form-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" onclick="toggleUpdateTelescopeForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="searchTelescopeResults" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleSearchTelescopeForm()">&times;</span>
+                <table id="telescopeResultsTable">
+                    <thead>
+                    <tr>
+                        <th>Telescope ID</th>
+                        <th>Telescope Name</th>
+                        <th>Condition</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <script>
+            function toggleSearchTelescopeForm() {
+                var modal = document.getElementById("searchTelescopeResults");
+                if (modal.style.display === "none" || modal.style.display === "") {
+                    modal.style.display = "block";
+                } else {
+                    modal.style.display = "none";
+                }
+            }
+
+            function searchTelescope() {
+                var searchValue = document.getElementById("telescopeSearchInput").value;
+
+                if (!Number.isInteger(parseInt(searchValue)) || searchValue === "") {
+                    alert("Please enter a valid integer.");
+                    return;
+                }
+
+                fetch(`/searchTelescope/${searchValue}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+
+                        if (data.TelescopeID) {
+                            const tableBody = document.querySelector('#telescopeResultsTable tbody');
+                            tableBody.innerHTML = '';
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                        <td>${data.TelescopeID}</td>
+                        <td>${data.TheName}</td>
+                        <td>${data.Thecondition}</td>
+
+
+            `;
+                            tableBody.appendChild(row);
+                            toggleSearchTelescopeForm();
+                        } else {
+                            alert('telescope not found');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while fetching the telescope data');
+                    });
+            }
+
+
+            document.getElementById('insertTelescope').addEventListener('click', toggleInsertTelescopeForm);
+
+            function toggleInsertTelescopeForm() {
+                const formContainer = document.getElementById('insertTelescopeFormContainer');
+                formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+            }
+
+
+            document.getElementById('insertTelescopeForm').addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const insertForm = event.target;
+                const formData = new FormData(insertForm);
+
+                try {
+                    const response = await fetch('/UploadTelescopes', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        alert("Telescope inserted successfully");
+                        toggleInsertTelescopeForm();
+                        await fetchData5();
+                    } else {
+                        const error = await response.json();
+                        alert(`Error: ${error.message}`);
+                    }
+                } catch (error) {
+                    console.error('Error inserting the telescope:', error);
+                } finally {
+                    insertForm.reset();
+                }
+            });
+
+            async function updateTelescopeRow(TelescopeID) {
+                try {
+                    const response = await fetch(`/searchTelescope/${TelescopeID}`);
+                    const telescope = await response.json();
+                    console.log(telescope)
+
+                    document.getElementById('updateTelescopeID2').value = telescope.TelescopeID;
+                    document.getElementById('updateTelescopeName').value = telescope.TheName;
+                    document.getElementById('updateTelescopeCondition').value = telescope.Thecondition;
+
+                    toggleUpdateTelescopeForm();
+
+                } catch (error) {
+                    console.error('Error fetching telescope details:', error);
+                }
+            }
+
+            function toggleUpdateTelescopeForm() {
+                const formContainer = document.getElementById("updateTelescopeFormContainer");
+                formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+
+            }
+
+            document.getElementById('updateTelescopeForm').addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const UpdateForm = event.target;
+                const TelescopeID = document.getElementById('updateTelescopeID2').value;
+                const TheName = document.getElementById('updateTelescopeName').value;
+                const Thecondition = document.getElementById('updateTelescopeCondition').value;
+
+
+                const formData = {
+                    updateTelescopeID2: TelescopeID,
+                    updateTelescopeName: TheName,
+                    updateTelescopeCondition: Thecondition
+
+
+                };
+
+                try {
+                    const response = await fetch('/UpdateTelescope', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert("Telescope Updated successfully");
+                        toggleUpdateTelescopeForm();
+                        await fetchData5();
+                    } else {
+                        const error = await response.json();
+                        alert(`Error: ${error.message}`);
+                    }
+                } catch (error) {
+                    console.error('Error updating the telescope:', error);
+                }
+            });
+
+            async function fetchData5() {
+                try {
+                    const response = await fetch('/getadminTelescopes');
+                    const data = await response.json();
+                    console.log(data)
+                    const tableBody = document.querySelector('#Telescopes tbody');
+                    tableBody.innerHTML = '';
+                    //remember to show it as a pdf
+                    console.log(data);
+                    data.forEach(telescope => {
+                        console.log(telescope)
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                <td>${telescope.TelescopeID}</td>
+                <td>${telescope.TheName}</td>
+               <td>${telescope.Thecondition}</td>
+                <td>
+              <div class="action-buttons-container">
+               <button class="action-button" onclick="updateTelescopeRow('${telescope.TelescopeID}')">Update</button>
+                 <button class="action-button" onclick="deleteTelescopeRow('${telescope.TelescopeID}')">Delete</button>
+                 </div>
+                </td>
+            `;
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+
+
+        </script>
+
+
+    </div>
+
+    <div id="Events" class="tabcontent">
+        <div class="actions">
+            <button id="insertEvent">Insert</button>
+            <input type="text" id="eventSearchInput" placeholder="Search..."/>
+            <button onclick="searchEvent()">Search</button>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Event ID</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>People</th>
+                <th>Location</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Photo</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Populate dynamically with backend data -->
+            </tbody>
+        </table>
+        <div id="insertEventFormContainer" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleInsertEventForm()">&times;</span>
+                <form id="insertEventForm" enctype="multipart/form-data">
+                    <h2>Insert New Event</h2>
+                    <label for="EventID">Event ID:</label>
+                    <input type="text" id="EventID" name="EventID" required>
+
+                    <label for="EventName">Event Name:</label>
+                    <input type="text" id="EventName" name="EventName" required>
+
+                    <label for="TheDate">The date:</label>
+                    <input type="date" id="TheDate" name="TheDate">
+
+                    <label for="numberOFpeople">Number of people:</label>
+                    <input type="text" id="numberOFpeople" name="numberOFpeople">
+
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" required>
+
+                    <label for="startTime">Start time:</label>
+                    <input type="time" id="startTime" name="startTime" required>
+
+                    <label for="endTime">End time:</label>
+                    <input type="time" id="endTime" name="endTime">
+
+                    <label for="PhotoURL">Photo:</label>
+                    <input type="file" id="PhotoURL" name="PhotoURL" accept=".jpg" required
+                           onchange="checkPhotoExtension(event)">
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description" required>
+
+                    <div class="form-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" onclick="toggleInsertEventForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="updateEventFormContainer" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleUpdateEventForm()">&times;</span>
+                <form id="updateEventForm" enctype="multipart/form-data">
+                    <h2>update Event</h2>
+                    <label for="updateEventID">Event ID:</label>
+                    <input type="text" id="updateEventID" name="updateEventID" required disabled>
+
+                    <label for="updateEventName">Event Name:</label>
+                    <input type="text" id="updateEventName" name="updateEventName" required>
+
+                    <label for="updateTheDate">The date:</label>
+                    <input type="date" id="updateTheDate" name="updateTheDate">
+
+                    <label for="updateNumberOFpeople">Number of people:</label>
+                    <input type="text" id="updateNumberOFpeople" name="updateNumberOFpeople">
+
+                    <label for="updateLocation">Location:</label>
+                    <input type="text" id="updateLocation" name="updateLocation" required>
+
+                    <label for="updateStartTime">Start time:</label>
+                    <input type="time" id="updateStartTime" name="updateStartTime" required>
+
+                    <label for="updateEndTime">End time:</label>
+                    <input type="time" id="updateEndTime" name="updateEndTime">
+
+                    <label for="updatePhotoURL">Photo:</label>
+                    <input type="file" id="updatePhotoURL" name="updatePhotoURL" accept=".jpg"
+                           onchange="checkPhotoExtension(event)">
+                    <label for="updateDescription">Description:</label>
+                    <input type="text" id="updateDescription" name="updateDescription" required>
+
+
+                    <div class="form-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" onclick="toggleUpdateEventForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="searchEventResults" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="toggleSearchEventForm()">&times;</span>
+                <table id="eventResultsTable">
+                    <thead>
+                    <tr>
+                        <th>Event ID</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>People</th>
+                        <th>Location</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Photo</th>
+                        <th>Description</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+<script>
+
+    function toggleSearchEventForm() {
+        var modal = document.getElementById("searchEventResults");
+        if (modal.style.display === "none" || modal.style.display === "") {
+            modal.style.display = "block";
+        } else {
+            modal.style.display = "none";
+        }
+    }
+
+    function searchEvent() {
+        var searchValue = document.getElementById("eventSearchInput").value;
+
+        if (!Number.isInteger(parseInt(searchValue)) || searchValue === "") {
+            alert("Please enter a valid integer.");
+            return;
+        }
+
+        fetch(`/searchEvent/${searchValue}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+
+                if (data.EventID) {
+                    const tableBody = document.querySelector('#eventResultsTable tbody');
+                    tableBody.innerHTML = '';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td>${data.EventID}</td>
+                <td>${data.EventName}</td>
+               <td>${data.TheDate}</td>
+               <td>${data.numberOFPeople || 'No data'}</td>
+               <td>${data.location}</td>
+               <td>${data.startTime}</td>
+               <td>${data.endTime || 'No data'}</td>
+                <td><img src="${data.PhotoURL}" alt="${data.EventName}" width="100" height="100"></td>
+                <td>${data.description}</td>
+
+
+            `;
+                    tableBody.appendChild(row);
+                    toggleSearchEventForm();
+                } else {
+                    alert('event not found');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while fetching the event data');
+            });
+    }
+
+
+    //insert event functions
+    function checkEventExtension(event) {
+        const file = event.target.files[0];
+        if (file && !file.name.endsWith('.jpg')) {
+            alert('Only .jpg images are allowed!');
+            event.target.value = '';
+        }
+    }
+
+    document.getElementById('insertEvent').addEventListener('click', toggleInsertEventForm);
+
+    function toggleInsertEventForm() {
+        const formContainer = document.getElementById('insertEventFormContainer');
+        formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+    }
+
+
+    document.getElementById('insertEventForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const insertForm = event.target;
+        const formData = new FormData(insertForm);
+
+
+        try {
+            const response = await fetch('/UploadEvents', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                alert("Event inserted successfully");
+                toggleInsertEventForm();
+                await fetchData6();
+            } else {
+                const error = await response.json();
+                alert(`Error: ${error.message}`);
+
+            }
+        } catch (error) {
+            console.error('Error inserting the event:', error);
+
+        } finally {
+
+            insertForm.reset();
+
+        }
+    });
+
+    async function updateEventRow(EventID) {
+        try {
+            const response = await fetch(`/searchEvent/${EventID}`);
+            const event = await response.json();
+            console.log(event);
+
+            document.getElementById('updateEventID').value = event.EventID;
+            document.getElementById('updateEventName').value = event.EventName;
+            document.getElementById('updateTheDate').value = event.TheDate;
+            document.getElementById('updateStartTime').value = event.startTime;
+            document.getElementById('updateEndTime').value = event.endTime;
+            document.getElementById('updateNumberOFpeople').value = event.numberOFPeople;
+            document.getElementById('updateDescription').value = event.description;
+            document.getElementById('updateLocation').value = event.location;
+
+            toggleUpdateEventForm();
+        } catch (error) {
+            console.error('Error fetching event details:', error);
+        }
+    }
+
+    function toggleUpdateEventForm() {
+        const formContainer = document.getElementById("updateEventFormContainer");
+        formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+
+    }
+
+    document.getElementById('updateEventForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+
+        const EventID = document.getElementById('updateEventID').value;
+        const EventName = document.getElementById('updateEventName').value;
+        const TheDate = document.getElementById('updateTheDate').value;
+        const numberOFPeople = document.getElementById('updateNumberOFpeople').value;
+        const location = document.getElementById('updateLocation').value;
+        const startTime = document.getElementById('updateStartTime').value;
+        const endTime = document.getElementById('updateEndTime').value;
+        const description2 = document.getElementById('updateDescription').value;
+
+        const PhotoURL = document.getElementById('updatePhotoURL').files[0];
+
+        const formData = new FormData();
+        formData.append('EventID', EventID);
+        formData.append('EventName', EventName);
+        formData.append('TheDate', TheDate);
+        formData.append('numberOFpeople', numberOFPeople);
+        formData.append('location', location);
+        formData.append('startTime', startTime);
+        formData.append('endTime', endTime);
+        formData.append('description', description2);
+
+
+        if (PhotoURL) {
+            formData.append('PhotoURL', PhotoURL);
+        }
+
+        try {
+            const response = await fetch('/UpdateEvent', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                alert("Event updated successfully");
+                await fetchData6();
+                toggleUpdateEventForm();
+            } else {
+                await fetchData6();
+                const error = await response.json();
+                alert(`Error: ${error.message}`);
+            }
+        } catch (error) {
+            await fetchData6();
+            console.error('Error updating the event:', error);
+        }
+    });
+</script>
+
+<script>
+    function openTab(event, tableName) {
+        var i, tabcontent, tablink;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablink = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablink.length; i++) {
+            tablink[i].className = tablink[i].className.replace(" active", "");
+        }
+        document.getElementById(tableName).style.display = "block";
+        event.currentTarget.className += " active";
+    }
+
+
+    function searchTable(tableId, input) {
+        // Logic to filter table rows based on search input
+    }
+
+
+    function deleteMemberRow(memberId) {
+        if (confirm('Are you sure you want to delete this row?')) {
+            try {
+                fetch('/deleteMembers', {
+                    method: 'POST',
+                    headers: {
+                        'content-Type': 'application/json'
+                    }, body: JSON.stringify({id: memberId})
+                })
+
+                    .then(response => {
+                            if (response.ok) {
+                                alert("member deleted successfully");
+
+                                fetchData1();
+                            } else {
+                                const error = response.json();
+                                alert(`Error:${error.message}`);
+                            }
+
+                        }
+                    )
+
+            } catch (error) {
+                console.error('error deleting the member', error);
+
+            }
+        }
+    }
+
+    function deletePhotoRow(photoId) {
+        if (confirm('Are you sure you want to delete this row?')) {
+            try {
+                fetch('/deletePhoto', {
+                    method: 'POST',
+                    headers: {
+                        'content-Type': 'application/json'
+                    }, body: JSON.stringify({id: photoId})
+                })
+
+                    .then(response => {
+                            if (response.ok) {
+                                alert("photo deleted successfully");
+
+                                fetchData2();
+                            } else {
+                                const error = response.json();
+                                alert(`Error:${error.message}`);
+                            }
+
+                        }
+                    )
+
+            } catch (error) {
+                console.error('error deleting the photo', error);
+
+            }
+        }
+    }
+
+    function deleteResearchRow(researchId) {
+        if (confirm('Are you sure you want to delete this row?')) {
+            try {
+                fetch('/deleteResearch', {
+                    method: 'POST',
+                    headers: {
+                        'content-Type': 'application/json'
+                    }, body: JSON.stringify({id: researchId})
+                })
+
+                    .then(response => {
+                            if (response.ok) {
+                                alert("research deleted successfully");
+
+                                fetchData3();
+                            } else {
+                                const error = response.json();
+                                alert(`Error:${error.message}`);
+                            }
+
+                        }
+                    )
+
+            } catch (error) {
+                console.error('error deleting the research', error);
+
+            }
+        }
+    }
+
+    function deleteResourceRow(resourceId) {
+        if (confirm('Are you sure you want to delete this row?')) {
+            try {
+                fetch('/deleteResource', {
+                    method: 'POST',
+                    headers: {
+                        'content-Type': 'application/json'
+                    }, body: JSON.stringify({id: resourceId})
+                })
+
+                    .then(response => {
+                            if (response.ok) {
+                                alert("resource deleted successfully");
+
+                                fetchData4();
+                            } else {
+                                const error = response.json();
+                                alert(`Error:${error.message}`);
+                            }
+
+                        }
+                    )
+
+            } catch (error) {
+                console.error('error deleting the resource', error);
+
+            }
+        }
+    }
+
+    function deleteTelescopeRow(telescopeId) {
+        if (confirm('Are you sure you want to delete this row?')) {
+            try {
+                fetch('/deleteTelescope', {
+                    method: 'POST',
+                    headers: {
+                        'content-Type': 'application/json'
+                    }, body: JSON.stringify({id: telescopeId})
+                })
+
+                    .then(response => {
+                            if (response.ok) {
+                                alert("telescope deleted successfully");
+
+                                fetchData5();
+                                fetchData2();
+                            } else {
+                                const error = response.json();
+                                alert(`Error:${error.message}`);
+                            }
+
+                        }
+                    )
+
+            } catch (error) {
+                console.error('error deleting the telescope', error);
+
+            }
+        }
+    }
+
+    function deleteEventRow(EventId) {
+        if (confirm('Are you sure you want to delete this row?')) {
+            try {
+                fetch('/deleteEvent', {
+                    method: 'POST',
+                    headers: {
+                        'content-Type': 'application/json'
+                    }, body: JSON.stringify({id: EventId})
+                })
+
+                    .then(response => {
+                            if (response.ok) {
+                                alert("Event deleted successfully");
+
+                                fetchData6();
+                            } else {
+                                const error = response.json();
+                                alert(`Error:${error.message}`);
+                            }
+
+                        }
+                    )
+
+            } catch (error) {
+                console.error('error deleting the event', error);
+
+            }
+        }
+    }
+
+</script>
+<script>
+
+    async function fetchData6() {
+        try {
+            const response = await fetch('/getadminEvents');
+            const data = await response.json();
+            console.log(data)
+            const tableBody = document.querySelector('#Events  tbody');
+            tableBody.innerHTML = '';
+            //remember to show it as a photo
+            console.log(data);
+            data.forEach(event => {
+                console.log(event)
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${event.EventID}</td>
+                <td>${event.EventName}</td>
+               <td>${event.TheDate}</td>
+               <td>${event.numberOFPeople || 'No data'}</td>
+               <td>${event.location}</td>
+               <td>${event.startTime}</td>
+               <td>${event.endTime || 'No data'}</td>
+                <td><img src="${event.PhotoURL}" alt="${event.EventName}" width="100" height="100"></td>
+                <td>${event.description}</td>
+                <td>
+              <div class="action-buttons-container">
+               <button class="action-button" onclick="updateEventRow('${event.EventID}')">Update</button>
+                <button class="action-button" onclick="deleteEventRow('${event.EventID}')">Delete</button>
+                 </div>
+                </td>
+            `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+
+    window.onload = function () {
+        fetchData1();
+        fetchData2();
+        fetchData3();
+        fetchData4();
+        fetchData5();
+        fetchData6();
+    };
+
+
+</script>
+</body>
+</html>

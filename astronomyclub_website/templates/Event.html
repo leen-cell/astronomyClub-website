@@ -1,0 +1,136 @@
+<html>
+<head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""/>
+    <link
+            rel="stylesheet"
+            as="style"
+            onload="this.rel='stylesheet'"
+            href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900"
+          rel="stylesheet">
+    <title>Events</title>
+    <link rel="stylesheet" href="/static/assets/css/EventStyle.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="static/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="static/assets/css/owl.css">
+    <link rel="stylesheet" href="static/assets/css/lightbox.css">
+    <link rel="stylesheet" href="static/assets/css/AstroClub.css">
+
+</head>
+
+<body>
+<header class="main-header clearfix" role="header" style="background-color: #162239FC;">
+    <div class="logo">
+        <a href="/"><em>BZU Astronomy</em> Club</a>
+    </div>
+</header>
+
+<!--   Header From the Main ---------------------------------------------------------------------------->
+
+<!-- Photo Section -->
+<section class="photo-section">
+    <div class="text-content">
+        <h1 style="color: #b3b3b7;">Explore the universe</h1>
+        <p style="color: #adaeb4;">Join space lovers, enjoy stargazing, and learn from experts.</p>
+
+
+    </div>
+</section>
+
+<!-- Events Section -->
+<section class="events-section">
+    <div class="container">
+        <h2>Upcoming Events</h2>
+        <div id="upcoming-events" class="event-grid">
+
+        </div>
+        <div class="empty-message" id="no-upcoming" style="display: none;">
+            <p>No upcoming events at the moment.</p>
+        </div>
+
+        <h2>Past Events</h2>
+        <div id="past-events" class="event-grid">
+
+        </div>
+        <div class="empty-message" id="no-past" style="display: none;">
+            <p>No past events available.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/events')
+            .then(response => response.json())
+            .then(data => {
+                const pastEvents = data.pastEvents || [];
+                const upcomingEvents = data.upcoming || [];
+
+                const upcomingEventsContainer = document.getElementById('upcoming-events');
+                const pastEventsContainer = document.getElementById('past-events');
+                console.log('Upcoming Events:', upcomingEvents);
+                console.log('Past Events:', pastEvents);
+                // Function to create event card
+                const createEventCard = (event) => {
+                    console.log(event);
+                    const card = document.createElement('div');
+                    card.className = 'relative group cursor-pointer';
+                    card.style.width = '300px'; // Fixed width
+                    card.style.height = '400px';
+                    const eventDate = new Date(event.TheDate);
+
+                    const formattedDate = eventDate.toLocaleDateString();
+                    card.innerHTML = `
+                        <div class="relative overflow-hidden rounded-lg shadow-lg">
+                            <img src="${event.photoURL}" alt="${event.EventName}" class="w-full h-48 object-cover">
+                            <div class="p-4 bg-gray-800 text-white">
+                                <p class="text-sm">ID: ${event.EventID}</p>
+                                <h3 class="text-lg font-bold">${event.EventName}</h3>
+                                <p class="text-sm">Date: ${formattedDate}</p>
+                                <p class="text-sm">Start time: ${event.startTime}</p>
+                                <p class="text-sm">Location: ${event.location}</p>
+                                <p class="text-sm">Description: ${event.description}</p>
+
+                            </div>
+                        </div>
+                    `;
+                    return card;
+                };
+
+                // Populate Upcoming Events
+                if (upcomingEvents.length > 0) {
+                    document.getElementById('no-upcoming').style.display = 'none';
+                    upcomingEvents.forEach(event => {
+                        const card = createEventCard(event);
+                        upcomingEventsContainer.appendChild(card);
+                    });
+                } else {
+                    document.getElementById('no-upcoming').style.display = 'block';
+                }
+
+                // Populate Past Events
+                if (pastEvents.length > 0) {
+                    document.getElementById('no-past').style.display = 'none';
+                    pastEvents.forEach(event => {
+                        const card = createEventCard(event);
+                        pastEventsContainer.appendChild(card);
+                    });
+                } else {
+                    document.getElementById('no-past').style.display = 'block';
+                }
+            })
+            .catch(error => console.error('Error fetching events:', error));
+    });
+</script>
+
+</body>
+</html>

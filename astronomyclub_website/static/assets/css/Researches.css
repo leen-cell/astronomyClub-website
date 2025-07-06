@@ -1,0 +1,564 @@
+
+@import url(fontawesome.css);
+@import url("<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">");
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+a {
+	color: #3CF;
+    text-decoration: none;
+}
+
+a:hover {
+	color: #f5a425;
+    text-decoration: none;
+}
+
+ul {
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+}
+
+p {
+    font-size: 13px;
+    line-height: 22px;
+}
+
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+.section-heading h2:before {
+    width: 1px;
+    height: 100px;
+    background-color: rgba(250,250,250,0.1);
+    position: absolute;
+    top: -102px;
+    content: '';
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.section-heading h2 {
+    margin-top: 100px;
+    position: relative;
+    font-size: 18px;
+    font-weight: 500;
+    color: #ADAEB4FF;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    padding: 15px 20px;
+    border: 2px solid rgba(250,250,250,0.1);
+}
+
+
+/* Buttons */
+
+.main-button a {
+    background-color: #ffd245;
+    color: #fff;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    padding: 12px 20px;
+    display: inline-block;
+    outline: none;
+}
+
+a.menu-link { display: none; }
+
+@media screen and (max-width: 950px) {
+  a.menu-link {
+    float: right;
+    display: block;
+    font-size: 36px;
+    color: #ADAEB4FF;
+    padding-right: 30px;
+    padding-top: 15px;
+  }
+  nav[role="navigation"] {
+    clear: both;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+  }
+  .js nav[role="navigation"] {
+    overflow: hidden;
+    max-height: 0;
+  }
+  nav[role="navigation"].active {
+    max-height: 20em;
+    height: 20em;
+    overflow-y: scroll;
+  }
+  nav[role="navigation"] ul {
+    top: 0;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid rgba(250,250,250,0.25);
+    background-color: rgba(22,34,57,0.99);
+  }
+  nav[role="navigation"] li a {
+    display: block;
+    padding: 15px 0px;
+    border-bottom: 1px solid rgba(250,250,250,0.25);
+    text-align: center;
+    color: #ADAEB4FF;
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  nav[role="navigation"] li:hover a,
+  nav[role="navigation"] li.active a {
+      color: #ffd245;
+  }
+
+  @media screen and (min-width: 951px) {
+    .js nav[role="navigation"] {
+      max-height: none;
+    }
+
+    nav[role="navigation"] li {
+      display: inline-block;
+      margin: 0 0.25em;
+    }
+    nav[role="navigation"] li a {
+      border: 0;
+    }
+  }
+}
+
+/* Header */
+
+@media screen and (max-width: 1050px) {
+  .main-header .logo {
+      padding-left: 30px!important;
+  }
+
+  .main-menu {
+      padding-right: 30px!important;
+  }
+
+  .main-menu li {
+      margin-left: 5px!important;
+  }
+}
+
+.main-header {
+    background-color: rgba(22,34,57,0.95);
+    height: 80px;
+    position: fixed;
+    z-index: 12;
+    width: 100%;
+    top: 0;
+
+}
+
+.main-header .logo {
+    float: left;
+    line-height: 80px;
+    padding-left: 60px;
+    display: flex;
+  align-items: center;
+  margin-right: 30px;
+
+}
+
+
+
+.main-header .logo .logo-image {
+  width: 60px;
+  height: auto;
+  margin-right: 10px;
+}
+.main-header .logo a {
+    font-size: 36px;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: #adaeb4;
+}
+.main-header .logo a em {
+    font-style: normal;
+    color: #ffd245;
+}
+
+.main-menu {
+    float: right;
+    padding-right: 60px;
+}
+
+.main-menu li {
+    display: inline-block;
+    line-height: 79px;
+    margin-left: 15px;
+    position: relative;
+}
+
+.main-menu li:first-child {
+    margin-left: 0px;
+}
+
+.main-menu li a {
+    padding: 10px 15px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    color: #ADAEB4FF;
+    border: 2px solid transparent;
+    transition: all 0.5s;
+}
+
+.main-menu li.has-submenu a:after {
+    content: '\f107';
+    font-family: "FontAwesome";
+    margin-left: 5px;
+}
+
+.main-menu li.has-submenu ul li a:after {
+    display: none;
+}
+
+.main-menu li .sub-menu {
+    position: absolute;
+    width: 160px;
+    background-color: #18233a;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s;
+}
+
+.main-menu li:hover .sub-menu {
+    opacity: 1;
+    visibility: visible;
+}
+
+.main-menu li .sub-menu li {
+    display: block;
+    line-height: 20px;
+    margin-left: 0px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #121b2f;
+}
+
+.main-menu li .sub-menu li:first-child {
+    padding-top: 15px;
+}
+
+.main-menu li .sub-menu li:last-child {
+    margin-bottom: 0px;
+    border-bottom: none;
+}
+
+.main-menu li .sub-menu li a {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 0px 15px;
+    letter-spacing: 0.5px;
+    border: none;
+    transition: all 0.5s;
+}
+
+.main-menu li .sub-menu li a:hover {
+    color: #ffd245;
+    border: none;
+}
+
+.main-nav li:hover a,
+.main-nav li.active a {
+    border: 2px solid #ffd245;
+}
+
+@media (max-width: 950px) {
+  .main-nav li:hover a,
+  .main-nav li.active a {
+    border: 2px solid transparent;
+    border-bottom: 1px solid rgba(250,250,250,0.25);
+  }
+}
+.color1 {
+    color: #adaeb4; /* First part color */
+    font-weight: bold;
+        font-style: normal;
+
+}
+
+.color2 {
+    color: #ffd245; /* Second part color */
+    font-weight: bold;
+        font-style: normal;
+
+}
+
+.p1 {
+        margin-top: 0px;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #adaeb4;
+    letter-spacing: 1px;
+}
+.p2 {
+    color: #a859b2;
+}
+/*-------------------------------------------------      header ends   ---------------------------------------------------------*/
+/* Photo Section Styles */
+.photo-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)),
+        url('../images/research.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 60px 20px;
+    margin-top: 80px;
+    text-align: center;
+    color: white;
+}
+
+.photo-section .text-content h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+h1 {
+     font-style: normal;
+}
+
+.photo-section .text-content p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.photo-section .search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .search-bar input[type="text"] {
+    width: 60%;
+    max-width: 400px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+    color: #333; /* تحديد لون النص */
+}
+
+.search-bar input[type="text"]:focus {
+    border-color: #007bff;
+    color: #000; /* تغيير لون النص عند التركيز */
+}
+  .search-bar button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #5e0ba2;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  .search-bar button:hover {
+    background-color: #28004d;
+  }
+  /* ------------------------------------------------------------------------------------- */
+  /* Slider Container */
+.research-slider-container {
+    text-align: center;
+
+    padding: 20px;
+    max-width: 100%;
+    height: 100vh;
+    background-color: #040e1f;
+}
+
+
+
+.research-slider-container p {
+    font-size: 1.2em;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+/* Slider */
+.slider {
+    position: relative;
+    overflow: hidden;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+
+/* Slider Container */
+.research-slider-container {
+    text-align: center;
+    padding: 20px;
+    max-width: 100%;
+    height: auto;  /* Adjust to auto if you don't want it to take full viewport height */
+    background-color: #040e1f;
+}
+
+/* Optional: Adding responsiveness */
+.research-slider-container p {
+    font-size: 1.2em;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+/* Slider */
+.slider {
+    position: relative;
+    overflow: hidden;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 20px;  /* Adds space between cards inside the slider */
+}
+
+/* Research Card */
+.research-card {
+    max-width: 400px;  /* Adjust the max width as needed */
+    width: 100%;       /* Ensures it takes full width up to the max-width */
+    margin: 10px auto;    /* Centers the card horizontally */
+    background-color: #9e77a0;  /* Optional: Adds background to the card */
+    border-radius: 8px; /* Optional: Rounded corners for a smoother look */
+    padding: 20px;  /* Optional: Adds some padding to the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow for better visibility */
+}
+
+/* Research Card Heading */
+.research-card h3 {
+    font-size: 1.6em;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: bold; /* Optional: Makes the heading bold */
+}
+
+/* Hover effect for research cards */
+.research-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smoother hover effect */
+}
+
+/* Optional: Card responsiveness for small screens */
+@media (max-width: 768px) {
+    .research-card {
+        max-width: 90%;  /* Ensures cards take up most of the available width on smaller screens */
+    }
+}
+
+/* Navigati                                     on */
+
+h2 {
+    text-align: center;
+    margin: 30px 0;
+}
+
+/* Slider Styles */
+.slider-container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    position: relative;
+
+}
+
+.slider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card {
+    min-width: 300px;
+    margin: 0 10px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.research-link {
+    text-decoration: none;
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+}
+.research-link:hover {
+    text-decoration: underline; /* Adds underline when mouse hovers over the title */
+}
+
+.card h3 {
+    font-size: 1.6em;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.card p {
+    color: #555;
+    font-size: small;
+
+}
+
+
+/* Navigation Arrows */
+button.prev,
+button.next {
+    background-color: #ffd245; /* اللون الأصفر */
+    color: white;
+    padding: 15px;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    border-radius: 50%;
+    transition: all 200ms ease-in-out;
+}
+
+button.prev:hover,
+button.next:hover {
+    background-color: rgb(24, 35, 58); /* لون عند التمرير */
+}
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+} 
