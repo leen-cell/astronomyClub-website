@@ -98,9 +98,7 @@ astronomyclub-website/
 │   ├── admin-dashboard.html
 │   ├── members.html
 │   └── ...
-├── .gitignore
 ├── README.md
-└── requirements.txt  ← optional
 ```
 
 ---
